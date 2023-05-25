@@ -1,6 +1,6 @@
-from openedx_filters import PipelineStep
-from openedx_filters.learning.filters import CourseHomeUrlCreationStarted
+"""Open edx Filters Pipeline for the federated content connector."""
 from openedx.core.djangoapps.catalog.utils import get_course_data
+from openedx_filters import PipelineStep
 
 from federated_content_connector.constants import EXEC_ED_COURSE_TYPE, EXEC_ED_LANDING_PAGE, PRODUCT_SOURCE_2U
 
@@ -23,7 +23,7 @@ class CreateCustomUrlForCourseStep(PipelineStep):
         }
     """
 
-    def run_filter(self, course_key, course_home_url):
+    def run_filter(self, course_key, course_home_url):  # pylint: disable=arguments-differ
         """
         Pipeline step that modifies the course home url for externally hosted courses
         """
@@ -34,6 +34,6 @@ class CreateCustomUrlForCourseStep(PipelineStep):
             course_type = course_data.get('course_type')
             product_source = course_data.get('product_source')
             if course_type == EXEC_ED_COURSE_TYPE and product_source == PRODUCT_SOURCE_2U:
-                return {'course_key': course_key, 'course_home_url': EXEC_ED_LANDING_PAGE}
+                course_home_url = EXEC_ED_LANDING_PAGE
 
-        raise CourseHomeUrlCreationStarted.PreventCourseHomeUrlRewrite()
+        return {'course_key': course_key, 'course_home_url': course_home_url}

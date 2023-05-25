@@ -14,12 +14,13 @@ Change Log
 Unreleased
 **********
 
-*
-
-0.1.0 – 2023-05-24
+0.1.0 – 2023-05-26
 **********************************************
 
 Added
-=====
+_____
+
+* Basic skeleton of the app.
+* CreateCustomUrlForCourseStep pipeline.
 
 * First release on PyPI.
