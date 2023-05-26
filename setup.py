@@ -105,6 +105,7 @@ setup(
     version=VERSION,
     description="""One-line description for README and other doc files.""",
     long_description=README + '\n\n' + CHANGELOG,
+    long_description_content_type='text/x-rst',
     author='edX',
     author_email='oscm@edx.org',
     url='https://github.com/openedx/federated-content-connector',

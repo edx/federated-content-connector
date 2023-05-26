@@ -1,5 +1,5 @@
 federated-content-connector
-#############################
+===========================
 
 .. note::
 
@@ -12,7 +12,7 @@ federated-content-connector
 |license-badge| |status-badge|
 
 Purpose
-*******
+-------
 
 One-line description for README and other doc files.
 
@@ -23,10 +23,10 @@ codebase and should be oriented towards people who are new to the Open edX
 project.
 
 Getting Started
-***************
+---------------
 
 Developing
-==========
+~~~~~~~~~~
 
 One Time Setup
 --------------
@@ -88,7 +88,7 @@ PLACEHOLDER: For details on how to deploy this component, see the `deployment ho
 .. _deployment how-to: https://docs.openedx.org/projects/federated-content-connector/how-tos/how-to-deploy-this-component.html
 
 Getting Help
-************
+============
 
 Documentation
 =============
@@ -122,7 +122,7 @@ For more information about these options, see the `Getting Help`_ page.
 .. _Getting Help: https://openedx.org/getting-help
 
 License
-*******
+=======
 
 The code in this repository is licensed under the AGPL 3.0 unless
 otherwise noted.
@@ -130,7 +130,7 @@ otherwise noted.
 Please see `LICENSE.txt <LICENSE.txt>`_ for details.
 
 Contributing
-************
+============
 
 Contributions are very welcome.
 Please read `How To Contribute <https://openedx.org/r/how-to-contribute>`_ for details.
@@ -143,14 +143,14 @@ You can start a conversation by creating a new issue on this repo summarizing
 your idea.
 
 The Open edX Code of Conduct
-****************************
+============================
 
 All community members are expected to follow the `Open edX Code of Conduct`_.
 
 .. _Open edX Code of Conduct: https://openedx.org/code-of-conduct/
 
 People
-******
+======
 
 The assigned maintainers for this component and other project details may be
 found in `Backstage`_. Backstage pulls this data from the ``catalog-info.yaml``
@@ -159,7 +159,7 @@ file in this repo.
 .. _Backstage: https://backstage.openedx.org/catalog/default/component/federated-content-connector
 
 Reporting Security Issues
-*************************
+=========================
 
 Please do not report security issues in public. Please email security@tcril.org.
 

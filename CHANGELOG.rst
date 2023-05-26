@@ -1,5 +1,5 @@
 Change Log
-##########
+==========
 
 ..
    All enhancements and patches to federated_content_connector will be documented
@@ -12,15 +12,14 @@ Change Log
 .. There should always be an "Unreleased" section for changes pending release.
 
 Unreleased
-**********
+----------
+
+0.1.1 – 2023-05-26
+------------------
+* Fixes for PyPI description markup.
 
 0.1.0 – 2023-05-26
-**********************************************
-
-Added
-_____
-
+------------------
 * Basic skeleton of the app.
 * CreateCustomUrlForCourseStep pipeline.
-
 * First release on PyPI.
