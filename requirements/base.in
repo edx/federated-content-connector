@@ -5,3 +5,4 @@ Django             # Web application framework
 openedx-filters                     # Open edX Filters from Hooks Extension Framework (OEP-50)
 edx-django-utils
 edx-opaque-keys
+django-extensions

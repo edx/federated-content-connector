@@ -3,7 +3,8 @@ Database models for federated_content_connector.
 """
 from django.db import models
 from opaque_keys.edx.django.models import CourseKeyField
-from model_utils.models import TimeStampedModel
+from django_extensions.db.models import TimeStampedModel
+
 
 class CourseDetails(TimeStampedModel):
 
