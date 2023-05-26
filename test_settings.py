@@ -32,6 +32,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
+    'openedx.core.djangoapps.catalog',
     'federated_content_connector',
 )
 
