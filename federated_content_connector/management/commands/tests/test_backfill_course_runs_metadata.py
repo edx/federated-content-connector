@@ -22,3 +22,6 @@ class TestBackfillCourserunsMetadataCommand(TestCase):
     def setUp(self):
         super().setUp()
         self.command = backfill_course_runs_metadata.Command()
+
+    def test_command(self):
+        assert False
