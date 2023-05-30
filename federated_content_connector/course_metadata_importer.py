@@ -105,8 +105,8 @@ class CourseMetadataImporter(object):
             courserun_key = str(courserun_locator)
             course_metadata = cls.find_attr(courses_details, 'key', course_key)
 
-            course_type = course_metadata.get('course_type')
-            product_source = course_metadata.get('product_source')
+            course_type = course_metadata.get('course_type') or ''
+            product_source = course_metadata.get('product_source') or ''
             if product_source:
                 product_source = product_source.get('slug')
 
@@ -126,7 +126,6 @@ class CourseMetadataImporter(object):
                 end_date = course_run.get('end')
 
             course_data = {
-                'courserun_key': courserun_key,
                 'course_type': course_type,
                 'product_source': product_source,
                 'enroll_by': enroll_by,
@@ -139,8 +138,10 @@ class CourseMetadataImporter(object):
 
     @classmethod
     def store_courses_details(cls, courses_details):
-        for course_detail in courses_details:
-            courserun_key = course_detail.pop('courserun_key')
+        """
+        Store courses metadata in database.
+        """
+        for courserun_key, course_detail in courses_details.items():
             CourseDetails.objects.get_or_create(
                 id=courserun_key,
                 defaults=course_detail

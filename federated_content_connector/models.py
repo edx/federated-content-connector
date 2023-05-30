@@ -8,7 +8,12 @@ from django_extensions.db.models import TimeStampedModel
 
 class CourseDetails(TimeStampedModel):
 
-    id = CourseKeyField(db_index=True, primary_key=True, max_length=255)
+    id = CourseKeyField(
+        db_index=True,
+        primary_key=True,
+        max_length=255,
+        help_text='Courserun key'
+    )
 
     course_type = models.CharField(
         max_length=255,
