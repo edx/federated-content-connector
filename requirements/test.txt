@@ -4,10 +4,20 @@
 #
 #    make upgrade
 #
-asgiref==3.7.1
+amqp==5.1.1
+    # via
+    #   -r requirements/base.txt
+    #   kombu
+asgiref==3.7.2
     # via
     #   -r requirements/base.txt
     #   django
+billiard==3.6.4.0
+    # via
+    #   -r requirements/base.txt
+    #   celery
+celery==5.2.7
+    # via -r requirements/base.txt
 cffi==1.15.1
     # via
     #   -r requirements/base.txt
@@ -15,11 +25,27 @@ cffi==1.15.1
 click==8.1.3
     # via
     #   -r requirements/base.txt
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
     #   code-annotations
     #   edx-django-utils
+click-didyoumean==0.3.0
+    # via
+    #   -r requirements/base.txt
+    #   celery
+click-plugins==1.1.1
+    # via
+    #   -r requirements/base.txt
+    #   celery
+click-repl==0.2.0
+    # via
+    #   -r requirements/base.txt
+    #   celery
 code-annotations==1.3.0
     # via -r requirements/test.in
-coverage[toml]==7.2.6
+coverage[toml]==7.2.7
     # via pytest-cov
 ddt==1.6.0
     # via -r requirements/test.in
@@ -50,6 +76,10 @@ iniconfig==2.0.0
     # via pytest
 jinja2==3.1.2
     # via code-annotations
+kombu==5.2.4
+    # via
+    #   -r requirements/base.txt
+    #   celery
 markupsafe==2.1.2
     # via jinja2
 newrelic==8.8.0
@@ -66,6 +96,10 @@ pbr==5.11.1
     #   stevedore
 pluggy==1.0.0
     # via pytest
+prompt-toolkit==3.0.38
+    # via
+    #   -r requirements/base.txt
+    #   click-repl
 psutil==5.9.5
     # via
     #   -r requirements/base.txt
@@ -95,9 +129,14 @@ python-slugify==8.0.1
 pytz==2023.3
     # via
     #   -r requirements/base.txt
+    #   celery
     #   django
 pyyaml==6.0
     # via code-annotations
+six==1.16.0
+    # via
+    #   -r requirements/base.txt
+    #   click-repl
 sqlparse==0.4.4
     # via
     #   -r requirements/base.txt
@@ -118,3 +157,13 @@ typing-extensions==4.6.2
     # via
     #   -r requirements/base.txt
     #   asgiref
+vine==5.0.0
+    # via
+    #   -r requirements/base.txt
+    #   amqp
+    #   celery
+    #   kombu
+wcwidth==0.2.6
+    # via
+    #   -r requirements/base.txt
+    #   prompt-toolkit

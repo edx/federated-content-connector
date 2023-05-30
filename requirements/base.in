@@ -6,3 +6,4 @@ openedx-filters                     # Open edX Filters from Hooks Extension Fram
 edx-django-utils
 edx-opaque-keys
 django-extensions
+celery

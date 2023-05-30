@@ -16,7 +16,7 @@ class CourseDetails(TimeStampedModel):
     )
     product_source = models.CharField(
         max_length=255,
-        help_text='Tells about the origin of a course. For example, ???'
+        help_text='Tells about the origin of a course. For example, ??'
     )
     start_date = models.DateTimeField(
         null=True,
