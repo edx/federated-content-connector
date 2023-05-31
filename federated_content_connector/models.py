@@ -2,11 +2,16 @@
 Database models for federated_content_connector.
 """
 from django.db import models
-from opaque_keys.edx.django.models import CourseKeyField
 from django_extensions.db.models import TimeStampedModel
+from opaque_keys.edx.django.models import CourseKeyField
 
 
 class CourseDetails(TimeStampedModel):
+    """
+    Model to store Course metadata.
+
+    .. no_pii:
+    """
 
     id = CourseKeyField(
         db_index=True,
@@ -37,5 +42,8 @@ class CourseDetails(TimeStampedModel):
     )
 
     class Meta:
-        app_label = 'federated_content_connector'
+        """
+        Meta class for CourseDetails.
+        """
 
+        app_label = 'federated_content_connector'

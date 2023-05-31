@@ -1,4 +1,4 @@
-"""Async tasks for federated_content_connector"""
+"""Async tasks for federated_content_connector."""
 from logging import getLogger
 
 from celery import shared_task

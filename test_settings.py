@@ -74,3 +74,5 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_BROKER_URL = 'memory://localhost/'
 
 ### END CELERY
+
+USE_TZ = True

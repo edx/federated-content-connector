@@ -1,4 +1,9 @@
 """Mocked Models"""
 
 class CatalogIntegration:
-    pass
+
+    service_username = 'abc'
+
+    @classmethod
+    def current(cls, *args, **kwargs):
+        return cls

@@ -1,16 +1,15 @@
-""""Course metadata importer"""
+"""Course metadata importer."""
 
 import logging
 from urllib.parse import quote_plus
 
-from django.contrib.auth import get_user_model
-
-from federated_content_connector.models import CourseDetails
-
 from common.djangoapps.course_modes.models import CourseMode
+from django.contrib.auth import get_user_model
 from openedx.core.djangoapps.catalog.models import CatalogIntegration
 from openedx.core.djangoapps.catalog.utils import get_catalog_api_base_url, get_catalog_api_client
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+
+from federated_content_connector.models import CourseDetails
 
 EXEC_ED_COURSE_TYPE = "executive-education-2u"
 BEST_MODE_ORDER = [
@@ -22,15 +21,19 @@ BEST_MODE_ORDER = [
 ]
 
 logger = logging.getLogger(__name__)
-User = get_user_model()  # pylint: disable=invalid-name
+User = get_user_model()
 
 
-class CourseMetadataImporter(object):
-    """Import course metadata from discovery"""
+class CourseMetadataImporter:
+    """
+    Import course metadata from discovery.
+    """
 
     @classmethod
     def get_api_client(cls):
-        """Returns discovery api client"""
+        """
+        Return discovery api client.
+        """
         catalog_integration = CatalogIntegration.current()
         username = catalog_integration.service_username
 
@@ -58,10 +61,15 @@ class CourseMetadataImporter(object):
         if courserun_keys:
             filter_ = {'id__in': courserun_keys}
 
-        # TODO: Which courses we should consider and which courses we should exclude?
         # TODO: What to do with old style course keys?
-        all_courserun_locators = CourseOverview.get_all_courses(filter_=filter_).values_list('id', flat=True)
-        for courserun_locators in cls.chunks(all_courserun_locators):
+        all_active_courserun_locators = CourseOverview.get_all_courses(
+            filter_=filter_,
+            active_only=True
+        ).values_list(
+            'id',
+            flat=True
+        )
+        for courserun_locators in cls.chunks(all_active_courserun_locators):
 
             # convert course locator objects to courserun keys
             courserun_keys = map(str, courserun_locators)
@@ -75,12 +83,12 @@ class CourseMetadataImporter(object):
             logger.info(f'[COURSE_METADATA_IMPORTER] Import completed. Courses: {courserun_keys}')
 
         if filter_ is None:
-            logger.info(f'[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
+            logger.info('[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
 
     @classmethod
-    def fetch_courses_details(cls, client, courserun_locators, api_base_url):  # lint-amnesty, pylint: disable=missing-function-docstring
+    def fetch_courses_details(cls, client, courserun_locators, api_base_url):
         """
-        Fetch the course data from discovery using `/api/v1/courses` endpoint
+        Fetch the course data from discovery using `/api/v1/courses` endpoint.
         """
         course_keys = [cls.construct_course_key(courserun_locator) for courserun_locator in courserun_locators]
         encoded_course_keys = ','.join(map(quote_plus, course_keys))
@@ -104,6 +112,8 @@ class CourseMetadataImporter(object):
             course_key = cls.construct_course_key(courserun_locator)
             courserun_key = str(courserun_locator)
             course_metadata = cls.find_attr(courses_details, 'key', course_key)
+            if not course_metadata:
+                continue
 
             course_type = course_metadata.get('course_type') or ''
             product_source = course_metadata.get('product_source') or ''
@@ -120,10 +130,11 @@ class CourseMetadataImporter(object):
                     end_date = additional_metadata.get('end_date')
             else:
                 course_run = cls.find_attr(course_metadata.get('course_runs'), 'key', courserun_key)
-                seat = cls.find_best_mode_seat(course_run.get('seats'))
-                enroll_by = seat.get('upgrade_deadline')
-                start_date = course_run.get('start')
-                end_date = course_run.get('end')
+                if course_run:
+                    seat = cls.find_best_mode_seat(course_run.get('seats'))
+                    enroll_by = seat.get('upgrade_deadline')
+                    start_date = course_run.get('start')
+                    end_date = course_run.get('end')
 
             course_data = {
                 'course_type': course_type,
@@ -142,7 +153,7 @@ class CourseMetadataImporter(object):
         Store courses metadata in database.
         """
         for courserun_key, course_detail in courses_details.items():
-            CourseDetails.objects.get_or_create(
+            CourseDetails.objects.update_or_create(
                 id=courserun_key,
                 defaults=course_detail
             )
@@ -150,14 +161,14 @@ class CourseMetadataImporter(object):
     @classmethod
     def find_best_mode_seat(cls, seats):
         """
-        Find the seat by best course mode
+        Find the seat by best course mode.
         """
         return sorted(seats, key=lambda x: BEST_MODE_ORDER.index(x['type']))[0]
 
     @classmethod
     def chunks(cls, keys, chunk_size=50):
         """
-        Yield chunks of size `chunk_size`
+        Yield chunks of size `chunk_size`.
         """
         for i in range(0, len(keys), chunk_size):
             yield keys[i:i + chunk_size]
@@ -167,7 +178,6 @@ class CourseMetadataImporter(object):
         """
         Construct course key from course run key.
         """
-        # TODO: What to do with old sytle course and course run keys?
         return f'{course_locator.org}+{course_locator.course}'
 
     @classmethod
@@ -178,3 +188,5 @@ class CourseMetadataImporter(object):
         for item in iterable:
             if item[attr_name] == attr_value:
                 return item
+
+        return None

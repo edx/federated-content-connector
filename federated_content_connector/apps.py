@@ -23,11 +23,11 @@ class FederatedContentConnectorConfig(AppConfig):
                 },
                 PluginSignals.RECEIVERS: [
                     {
-                        PluginSignals.SIGNAL_PATH: 'openedx.core.djangoapps.content.course_overviews.signals.IMPORT_COURSE_DETAILS',
+                        PluginSignals.SIGNAL_PATH: 'openedx.core.djangoapps.content.course_overviews.signals.IMPORT_COURSE_DETAILS',  # noqa: pylint: disable=line-too-long
                         PluginSignals.RECEIVER_FUNC_NAME: 'handle_courseoverview_import_course_details',
                     },
                     {
-                        PluginSignals.SIGNAL_PATH: 'openedx.core.djangoapps.content.course_overviews.signals.DELETE_COURSE_DETAILS',
+                        PluginSignals.SIGNAL_PATH: 'openedx.core.djangoapps.content.course_overviews.signals.DELETE_COURSE_DETAILS',  # noqa: pylint: disable=line-too-long
                         PluginSignals.RECEIVER_FUNC_NAME: 'handle_courseoverview_delete_course_details',
                     },
                 ],
