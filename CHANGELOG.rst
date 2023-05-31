@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+0.2.0 – 2023-05-31
+------------------
+* Added support for stage and prod landing pages via settings
+
 0.1.1 – 2023-05-26
 ------------------
 * Fixes for PyPI description markup.
