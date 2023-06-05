@@ -33,7 +33,8 @@ class CreateCustomUrlForCourseStep(PipelineStep):
         if course_data:
             course_type = course_data.get('course_type')
             product_source = course_data.get('product_source')
-            if course_type == EXEC_ED_COURSE_TYPE and product_source == PRODUCT_SOURCE_2U:
+            product_source_slug = product_source['slug'] if isinstance(product_source, dict) else product_source
+            if course_type == EXEC_ED_COURSE_TYPE and product_source_slug == PRODUCT_SOURCE_2U:
                 course_home_url = getattr(settings, 'EXEC_ED_LANDING_PAGE', EXEC_ED_LANDING_PAGE)
 
         return {'course_key': course_key, 'course_home_url': course_home_url}

@@ -34,8 +34,8 @@ class CreateCustomUrlForCourseStepTestCase(TestCase):
         self.course_home_url = 'www.edx.org'
 
     @data(
-        ({'course_type': EXEC_ED_COURSE_TYPE, 'product_source': PRODUCT_SOURCE_2U}, EXEC_ED_LANDING_PAGE),
-        ({'course_type': 'audit', 'product_source': 'edx'}, 'www.edx.org')
+        ({'course_type': EXEC_ED_COURSE_TYPE, 'product_source': {'slug': PRODUCT_SOURCE_2U}}, EXEC_ED_LANDING_PAGE),
+        ({'course_type': 'audit', 'product_source': {'slug': 'edx'}}, 'www.edx.org')
     )
     @unpack
     @patch('federated_content_connector.filters.pipeline.get_course_data')

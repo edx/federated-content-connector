@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+0.2.1 – 2023-06-5
+------------------
+* Fixed issue with product source data type
+
 0.2.0 – 2023-05-31
 ------------------
 * Added support for stage and prod landing pages via settings
