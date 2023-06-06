@@ -85,7 +85,7 @@ class TestSignals(TestCase):
         mocked_courserun_locator.return_value = self.courserun_locators
 
         # Import data
-        CourseMetadataImporter.import_courses_metadata()
+        CourseMetadataImporter.import_all_courses_metadata()
 
         assert CourseDetails.objects.count() == 2
 

@@ -11,4 +11,4 @@ class Command(BaseCommand):
     help = "Import course metadata for all existing courses"
 
     def handle(self, *args, **options):
-        CourseMetadataImporter.import_courses_metadata()
+        CourseMetadataImporter.import_all_courses_metadata()

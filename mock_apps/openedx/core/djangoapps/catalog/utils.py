@@ -3,7 +3,7 @@ def get_course_data(course_key_str, course_data):
 
 
 def get_catalog_api_base_url(*args, **kwargs):
-    return '/api/v1/'
+    return '/api/v1'
 
 
 def get_catalog_api_client(*args, **kwargs):

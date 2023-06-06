@@ -51,9 +51,35 @@ class CourseMetadataImporter:
         return get_catalog_api_client(user)
 
     @classmethod
-    def import_courses_metadata(cls, courserun_locators=None):
+    def import_all_courses_metadata(cls):
         """
-        Import course metadata for all or specific courses.
+        Import course metadata for all courses.
+        """
+        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import started for all courses.')
+
+        all_active_courserun_locators = cls.courserun_locators_to_import()
+        cls.import_courses_metadata(all_active_courserun_locators)
+
+        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
+
+    @classmethod
+    def import_specific_courses_metadata(cls, courserun_locators):
+        """
+        Import course metadata for specific courses.
+
+        Args:
+            courserun_locators (list): list of courserun locator objects
+        """
+        logger.info(f'[COURSE_METADATA_IMPORTER] Course metadata import started for courses. {courserun_locators}')
+
+        cls.import_courses_metadata(courserun_locators)
+
+        logger.info(f'[COURSE_METADATA_IMPORTER] Course metadata import completed for courses. {courserun_locators}')
+
+    @classmethod
+    def import_courses_metadata(cls, courserun_locators):
+        """
+        Import course metadata for given course locators.
 
         Args:
             courserun_locators (list): list of courserun locator objects
@@ -62,20 +88,15 @@ class CourseMetadataImporter:
 
         client = cls.get_api_client()
 
-        if courserun_locators:
-            all_active_courserun_locators = courserun_locators
-        else:
-            all_active_courserun_locators = cls.courserun_locators_to_import()
-
-        for active_courserun_locators in cls.chunks(all_active_courserun_locators):
+        for courserun_locators_chunk in cls.chunks(courserun_locators):
 
             # convert course locator objects to courserun keys
-            courserun_keys = list(map(str, active_courserun_locators))
+            courserun_keys = list(map(str, courserun_locators_chunk))
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Importing metadata. Courses: {courserun_keys}')
 
-            course_details = cls.fetch_courses_details(client, active_courserun_locators, get_catalog_api_base_url())
-            processed_courses_details = cls.process_courses_details(active_courserun_locators, course_details)
+            course_details = cls.fetch_courses_details(client, courserun_locators_chunk, get_catalog_api_base_url())
+            processed_courses_details = cls.process_courses_details(courserun_locators_chunk, course_details)
             cls.store_courses_details(processed_courses_details)
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Import completed. Courses: {courserun_keys}')
@@ -117,7 +138,7 @@ class CourseMetadataImporter:
         encoded_course_keys = ','.join(map(quote_plus, course_keys))
 
         logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Courses {course_keys}.')
-        api_url = f"{api_base_url}courses/?keys={encoded_course_keys}"
+        api_url = f"{api_base_url}/courses/?keys={encoded_course_keys}"
         response = client.get(api_url)
         response.raise_for_status()
         courses_details = response.json()

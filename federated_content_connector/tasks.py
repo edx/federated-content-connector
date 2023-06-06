@@ -19,4 +19,4 @@ def import_course_metadata(courserun_keys):
     """
     LOGGER.info(f'[FEDERATED_CONTENT_CONNECTOR] import_course_metadata task triggered: Keys: {courserun_keys}')
     courserun_locators = [CourseKey.from_string(courserun_key) for courserun_key in courserun_keys]
-    CourseMetadataImporter.import_courses_metadata(courserun_locators)
+    CourseMetadataImporter.import_specific_courses_metadata(courserun_locators)
