@@ -12,6 +12,8 @@ class FederatedContentConnectorConfig(AppConfig):
     """
 
     name = 'federated_content_connector'
+    label = 'federated_content_connector'
+    verbose_name = "Federated Content Connector"
     plugin_app = {
         PluginSettings.CONFIG: {
             'lms.djangoapp': {
@@ -21,6 +23,10 @@ class FederatedContentConnectorConfig(AppConfig):
                 'production': {
                     PluginSettings.RELATIVE_PATH: 'settings.production',
                 },
+            }
+        },
+        PluginSignals.CONFIG: {
+            'lms.djangoapp': {
                 PluginSignals.RECEIVERS: [
                     {
                         PluginSignals.SIGNAL_PATH: 'openedx.core.djangoapps.content.course_overviews.signals.IMPORT_COURSE_DETAILS',  # noqa: pylint: disable=line-too-long
