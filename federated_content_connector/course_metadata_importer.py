@@ -1,10 +1,13 @@
 """Course metadata importer."""
 
+import datetime
 import logging
 from urllib.parse import quote_plus
 
+import pytz
 from common.djangoapps.course_modes.models import CourseMode
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from openedx.core.djangoapps.catalog.models import CatalogIntegration
 from openedx.core.djangoapps.catalog.utils import get_catalog_api_base_url, get_catalog_api_client
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
@@ -48,42 +51,62 @@ class CourseMetadataImporter:
         return get_catalog_api_client(user)
 
     @classmethod
-    def import_courses_metadata(cls, courserun_keys=None):
+    def import_courses_metadata(cls, courserun_locators=None):
         """
         Import course metadata for all or specific courses.
 
         Args:
-            courserun_keys (list): list of courserun keys
+            courserun_locators (list): list of courserun locator objects
         """
+        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import started.')
+
         client = cls.get_api_client()
 
-        filter_ = None
-        if courserun_keys:
-            filter_ = {'id__in': courserun_keys}
+        if courserun_locators:
+            all_active_courserun_locators = courserun_locators
+        else:
+            all_active_courserun_locators = cls.courserun_locators_to_import()
 
-        # TODO: What to do with old style course keys?
-        all_active_courserun_locators = CourseOverview.get_all_courses(
-            filter_=filter_,
-            active_only=True
-        ).values_list(
-            'id',
-            flat=True
-        )
-        for courserun_locators in cls.chunks(all_active_courserun_locators):
+        for active_courserun_locators in cls.chunks(all_active_courserun_locators):
 
             # convert course locator objects to courserun keys
-            courserun_keys = map(str, courserun_locators)
+            courserun_keys = list(map(str, active_courserun_locators))
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Importing metadata. Courses: {courserun_keys}')
 
-            course_details = cls.fetch_courses_details(client, courserun_locators, get_catalog_api_base_url())
-            processed_courses_details = cls.process_courses_details(courserun_locators, course_details)
+            course_details = cls.fetch_courses_details(client, active_courserun_locators, get_catalog_api_base_url())
+            processed_courses_details = cls.process_courses_details(active_courserun_locators, course_details)
             cls.store_courses_details(processed_courses_details)
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Import completed. Courses: {courserun_keys}')
 
-        if filter_ is None:
-            logger.info('[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
+        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
+
+    @classmethod
+    def courserun_locators_to_import(cls):
+        """
+        Construct list of active course locators for which we want to import data.
+
+        We will exclude the courseruns which are already imported.
+        """
+        course_overviews = CourseOverview.get_all_courses()
+        course_details_ids = list(CourseDetails.objects.all().values_list('id', flat=True))
+
+        logger.info(
+            f'[COURSE_METADATA_IMPORTER] Already imported courseruns will be excluded. Keys: {course_details_ids}'
+        )
+
+        now = datetime.datetime.now(pytz.UTC)
+        return list(course_overviews.filter(
+            Q(end__gt=now) &
+            (
+                Q(enrollment_end__gt=now) |
+                Q(enrollment_end__isnull=True)
+            )
+        ).exclude(id__in=course_details_ids).values_list(
+            'id',
+            flat=True
+        ))
 
     @classmethod
     def fetch_courses_details(cls, client, courserun_locators, api_base_url):
@@ -94,11 +117,17 @@ class CourseMetadataImporter:
         encoded_course_keys = ','.join(map(quote_plus, course_keys))
 
         logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Courses {course_keys}.')
-        api_url = f"{api_base_url}/courses/?keys={encoded_course_keys}"
+        api_url = f"{api_base_url}courses/?keys={encoded_course_keys}"
         response = client.get(api_url)
         response.raise_for_status()
         courses_details = response.json()
         results = courses_details.get('results', [])
+
+        # Find and log the course keys not found in course-discovery
+        course_keys_in_response = [result.get('key') for result in results]
+        courses_not_found = list(set(course_keys) - set(course_keys_in_response))
+        if courses_not_found:
+            logger.info(f'[COURSE_METADATA_IMPORTER] Courses not found in discovery. Courses: {courses_not_found}')
 
         return results
 

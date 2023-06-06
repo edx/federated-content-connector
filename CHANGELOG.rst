@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.0.0 – 2023-06-06
+------------------
+* Fetch course metadata from discovery and store.
+
 0.2.1 – 2023-06-5
 ------------------
 * Fixed issue with product source data type

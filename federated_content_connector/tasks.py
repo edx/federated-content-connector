@@ -2,6 +2,7 @@
 from logging import getLogger
 
 from celery import shared_task
+from opaque_keys.edx.keys import CourseKey
 
 from federated_content_connector.course_metadata_importer import CourseMetadataImporter
 
@@ -16,5 +17,6 @@ def import_course_metadata(courserun_keys):
     Arguments:
         courserun_keys (list): courserun keys
     """
-    LOGGER.info('[FEDERATED_CONTENT_CONNECTOR] import_course_metadata task triggered')
-    CourseMetadataImporter.import_courses_metadata(courserun_keys)
+    LOGGER.info(f'[FEDERATED_CONTENT_CONNECTOR] import_course_metadata task triggered: Keys: {courserun_keys}')
+    courserun_locators = [CourseKey.from_string(courserun_key) for courserun_key in courserun_keys]
+    CourseMetadataImporter.import_courses_metadata(courserun_locators)

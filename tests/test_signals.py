@@ -30,6 +30,7 @@ class MockResponse:
         return True
 
     def json(self):
+        """Return the json representation of response."""
         if self.course_key:
             response = deepcopy(COURSES_ENDPOINT_RESPONSE)
             index = next((index for (item, index) in enumerate(response) if item["key"] == self.course_key), None)
@@ -54,15 +55,15 @@ class TestSignals(TestCase):
         ]
 
     @patch.object(CourseMetadataImporter, 'get_api_client')
-    @patch('federated_content_connector.course_metadata_importer.CourseOverview')
-    def test_handle_courseoverview_import_course_details(self, mocked_courseoverview_model, mocked_get_api_client):
+    @patch.object(CourseMetadataImporter, 'courserun_locators_to_import')
+    def test_handle_courseoverview_import_course_details(self, mocked_courserun_locator, mocked_get_api_client):
         """
         Verify that `handle_courseoverview_import_course_details` signal handler work as expected.
         """
         # Mock api client and api responses
         mocked_get_api_client.return_value = MagicMock()
         mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
-        mocked_courseoverview_model.get_all_courses.return_value.values_list.return_value = [self.courserun_locators[1]]
+        mocked_courserun_locator.return_value = [self.courserun_locators[1]]
 
         assert CourseDetails.objects.count() == 0
 
@@ -73,15 +74,15 @@ class TestSignals(TestCase):
         assert CourseDetails.objects.filter(id=self.courserun_locators[1]).exists()
 
     @patch.object(CourseMetadataImporter, 'get_api_client')
-    @patch('federated_content_connector.course_metadata_importer.CourseOverview')
-    def test_handle_courseoverview_delete_course_details(self, mocked_courseoverview_model, mocked_get_api_client):
+    @patch.object(CourseMetadataImporter, 'courserun_locators_to_import')
+    def test_handle_courseoverview_delete_course_details(self, mocked_courserun_locator, mocked_get_api_client):
         """
         Verify that `handle_courseoverview_delete_course_details` signal handler work as expected.
         """
         # Mock api client and api responses
         mocked_get_api_client.return_value = MagicMock()
         mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
-        mocked_courseoverview_model.get_all_courses.return_value.values_list.return_value = self.courserun_locators
+        mocked_courserun_locator.return_value = self.courserun_locators
 
         # Import data
         CourseMetadataImporter.import_courses_metadata()

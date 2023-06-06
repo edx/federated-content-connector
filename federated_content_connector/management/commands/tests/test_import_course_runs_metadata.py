@@ -49,8 +49,8 @@ class TestImportCourserunsMetadataCommand(TestCase):
         ]
 
     @patch.object(CourseMetadataImporter, 'get_api_client')
-    @patch('federated_content_connector.course_metadata_importer.CourseOverview')
-    def test_command(self, mocked_courseoverview_model, mocked_get_api_client):
+    @patch.object(CourseMetadataImporter, 'courserun_locators_to_import')
+    def test_command(self, mocked_courserun_locators_to_import, mocked_get_api_client):
         """
         Verify that command work as expected.
         """
@@ -58,7 +58,7 @@ class TestImportCourserunsMetadataCommand(TestCase):
 
         mocked_get_api_client.return_value = MagicMock()
         mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
-        mocked_courseoverview_model.get_all_courses.return_value.values_list.return_value = self.courserun_locators()
+        mocked_courserun_locators_to_import.return_value = self.courserun_locators()
 
         call_command(self.command)
 
