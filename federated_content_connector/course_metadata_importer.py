@@ -2,7 +2,7 @@
 
 import datetime
 import logging
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, urljoin
 
 import pytz
 from common.djangoapps.course_modes.models import CourseMode
@@ -138,7 +138,7 @@ class CourseMetadataImporter:
         encoded_course_keys = ','.join(map(quote_plus, course_keys))
 
         logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Courses {course_keys}.')
-        api_url = f"{api_base_url}/courses/?keys={encoded_course_keys}"
+        api_url = urljoin(f"{api_base_url}/", f"courses/?keys={encoded_course_keys}")
         response = client.get(api_url)
         response.raise_for_status()
         courses_details = response.json()
@@ -163,6 +163,7 @@ class CourseMetadataImporter:
             courserun_key = str(courserun_locator)
             course_metadata = cls.find_attr(courses_details, 'key', course_key)
             if not course_metadata:
+                logger.info(f'[COURSE_METADATA_IMPORTER] Metadata not found. CourseKey: {course_key}')
                 continue
 
             course_type = course_metadata.get('course_type') or ''

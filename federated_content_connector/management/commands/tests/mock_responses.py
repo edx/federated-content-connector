@@ -7,162 +7,208 @@ COURSES_ENDPOINT_RESPONSE = {
     "results": [
         {
             "key": "edX+DemoX",
-            "uuid": "102c166f-af2b-4fe2-ade0-ab08063d4d40",
-            "title": "Introduction to Computer Science",
+            "uuid": "fe2f341e-493d-42c4-8d0d-0661b490c2cb",
+            "title": "Supply Chain Management",
             "course_runs": [
                 {
-                    "key": "course-v1:edX+DemoX+Demo_Course",
-                    "uuid": "8db5692e-dfdd-4fe0-ba29-e30e793e6ae6",
-                    "title": "Demonstration Course",
-                    "external_key": None,
-                    "image": None,
-                    "short_description": "An introduction to the intellectual enterprises of computer science",
-                    "marketing_url": "course/",
+                   "key": "course-v1:edX+DemoX+Demo_Course",
+                   "uuid": "e1760190-2ac3-453b-a371-02f32cc701d8",
+                   "title": "Supply Chain Management",
+                   "external_key": None,
+                   "image": {
+                       "src": "https://prod-discovery.edx-cdn.org/media/course/image/fe2f341e.small.jpg",
+                       "description": None,
+                       "height": None,
+                       "width": None
+                   },
+                    "short_description": "<p>Understand effective supply chain.</p>",
+                    "marketing_url": "https://www.edx.org/course/suppl",
                     "seats": [
-                        {
-                            "type": "verified",
-                            "price": "149.00",
-                            "currency": "USD",
-                            "upgrade_deadline": "2023-05-02T21:06:11.671090Z",
-                            "upgrade_deadline_override": None,
-                            "credit_provider": None,
-                            "credit_hours": None,
-                            "sku": "8CF08E5",
-                            "bulk_sku": "A5B6DBE"
-                        },
-                        {
-                            "type": "audit",
-                            "price": "0.00",
-                            "currency": "USD",
-                            "upgrade_deadline": None,
-                            "upgrade_deadline_override": None,
-                            "credit_provider": None,
-                            "credit_hours": None,
-                            "sku": "68EFFFF",
-                            "bulk_sku": None
-                        }
-                    ],
-                    "start": "2013-02-05T05:00:00Z",
-                    "end": "2023-10-31T11:49:41Z",
-                    "go_live_date": None,
+                       {
+                           "type": "unpaid-executive-education",
+                           "price": "0.00",
+                           "currency": "USD",
+                           "upgrade_deadline": None,
+                           "upgrade_deadline_override": None,
+                           "credit_provider": None,
+                           "credit_hours": None,
+                           "sku": "3A89869",
+                           "bulk_sku": None
+                       }
+                   ],
+                    "start": "2022-03-14T00:00:00Z",
+                    "end": "2022-05-27T23:59:59Z",
+                    "go_live_date": "2023-06-06T00:00:00Z",
                     "enrollment_start": None,
-                    "enrollment_end": "2022-12-31T11:49:58Z",
-                    "weeks_to_complete": None,
+                    "enrollment_end": None,
+                    "weeks_to_complete": 8,
                     "pacing_type": "instructor_paced",
-                    "type": "verified",
-                    "run_type": "2d598558-f94e-41f8-8829-01a0027d2d17",
+                    "type": None,
+                    "run_type": "cff13320-a36f-40ed-b6d0-9df35e602528",
                     "status": "published",
-                    "is_enrollable": False,
+                    "is_enrollable": True,
                     "is_marketable": True,
                     "availability": "Current",
-                    "course": "edX+DemoX",
-                    "full_description": "This is CS50x , Harvard University's introduction to the ia",
-                    "announcement": None,
-                    "video": None,
-                    "content_language": None,
+                    "course": "UCT+SCM",
+                    "full_description": "<p><strong>Duration:</strong> 8 weeks (excluding orientation)</p>",
+                    "announcement": "2022-04-25T14:53:38.103538Z",
+                    "video": {
+                       "src": "https://www.youtube.com/embed/TNA9LYGptdc",
+                       "description": None,
+                       "image": None
+                   },
+                    "content_language": "en-us",
                     "license": "",
-                    "outcome": "",
-                    "transcript_languages": [],
+                    "outcome": "<p>On completion of this course</p>",
+                    "transcript_languages": [
+                       "en-us"
+                   ],
                     "instructors": [],
                     "staff": [],
-                    "min_effort": None,
-                    "max_effort": None,
-                    "modified": "2023-05-22T18:02:32.723407Z",
-                    "level_type": None,
+                    "min_effort": 6,
+                    "max_effort": 8,
+                    "modified": "2023-06-07T04:30:34.983860Z",
+                    "level_type": "Introductory",
                     "mobile_available": False,
                     "hidden": False,
                     "reporting_type": "mooc",
                     "eligible_for_financial_aid": True,
-                    "first_enrollable_paid_seat_price": 149,
-                    "has_ofac_restrictions": None,
+                    "first_enrollable_paid_seat_price": None,
+                    "has_ofac_restrictions": False,
                     "ofac_comment": "",
-                    "enrollment_count": 0,
+                    "enrollment_count": 1,
                     "recent_enrollment_count": 0,
                     "expected_program_type": None,
                     "expected_program_name": "",
-                    "course_uuid": "102c166f-af2b-4fe2-ade0-ab08063d4d40",
-                    "estimated_hours": 0,
-                    "content_language_search_facet_name": None,
+                    "course_uuid": "fe2f341e-493d-42c4-8d0d-0661b490c2cb",
+                    "estimated_hours": 56.0,
+                    "content_language_search_facet_name": "English",
                     "enterprise_subscription_inclusion": False
                 }
             ],
             "entitlements": [
                 {
-                    "mode": "verified",
-                    "price": "149.00",
+                    "mode": "paid-executive-education",
+                    "price": "748.00",
                     "currency": "USD",
-                    "sku": "9023CB5",
+                    "sku": "4B72644",
                     "expires": None
                 }
             ],
             "owners": [
                 {
-                    "uuid": "2906c944-5698-4e5d-bc18-a2bfe8d343af",
-                    "key": "edX",
-                    "name": "edX",
+                    "uuid": "c5b82171-94d3-40eb-befd-ade27c3d028a",
+                    "key": "UCT",
+                    "name": "University of Cape Town",
                     "auto_generate_course_run_keys": True,
-                    "certificate_logo_image_url": None,
-                    "logo_image_url": None,
+                    "certificate_logo_image_url": "https://prod-discovery.edx-cdn.org/orga.png",
+                    "logo_image_url": "https://prod-discovery.edx-cdn.org/organization/logos/c5b8.png",
                     "organization_hex_color": None,
-                    "description": None,
+                    "description": "<p>The University of Cape Town (UCT).</p>",
                     "description_es": "",
                     "homepage_url": None,
-                    "tags": [],
-                    "marketing_url": "school/edx",
-                    "slug": "edx",
-                    "banner_image_url": None,
-                    "enterprise_subscription_inclusion": False
+                    "tags": [
+                        "displayed_on_schools_and_partners_page",
+                        "displayed_on_sitemap_page",
+                        "2u_exec_ed_org"
+                    ],
+                    "marketing_url": "https://www.edx.org/school/uct",
+                    "slug": "uct",
+                    "banner_image_url": "https://prod-discovery.edx-cdn.org/organization/banner_images/c5b.png",
+                    "enterprise_subscription_inclusion": True
                 }
             ],
-            "image": None,
-            "short_description": "An introduction to the intellectual enterprises of computer science.",
-            "type": "97423c19-8254-43b6-bb7e-33b1f3efe246",
-            "url_slug": "introduction-to-computer-science",
+            "image": {
+                "src": "https://prod-discovery.edx-cdn.org/media/course/image/fe2f341e.small.jpg",
+                "description": None,
+                "height": None,
+                "width": None
+            },
+            "short_description": "<p>Understand effective supply chain management</p>",
+            "type": "db80f070-f3c9-4ddc-aec1-6d72ffcd96d7",
+            "url_slug": "uct-supply-chain-management-online-short-course",
             "course_type": "executive-education-2u",
             "enterprise_subscription_inclusion": False,
             "excluded_from_seo": False,
             "excluded_from_search": False,
-            "full_description": "This is CS50x , Harvard University's introduction to the ia.",
-            "level_type": None,
-            "subjects": [],
+            "full_description": "<p><strong>Duration:</strong> 8 weeks </p>",
+            "level_type": "Introductory",
+            "subjects": [
+                {
+                    "name": "Business & Management",
+                    "subtitle": "<p>Learn about business and management</p>",
+                    "description": "<p></p>",
+                    "banner_image_url": "https://www.edx.org/sites/default/files/b-1440x210.jpg",
+                    "card_image_url": "https://www.edx.org/sites/default/files/subject/image/card/business.jpg",
+                    "slug": "business-management",
+                    "uuid": "409d43f7-ff36-4834-9c28-252132347d87"
+                }
+            ],
             "prerequisites": [],
             "prerequisites_raw": "",
             "expected_learning_items": [],
-            "video": None,
+            "video": {
+                "src": "https://www.youtube.com/embed/TNA9LYGptdc",
+                "description": None,
+                "image": None
+            },
             "sponsors": [],
-            "modified": "2023-05-22T18:02:32.603508Z",
-            "marketing_url": None,
-            "syllabus_raw": "",
-            "outcome": "",
-            "original_image": None,
+            "modified": "2023-06-07T04:30:34.954203Z",
+            "marketing_url": "https://www.edx.org/course/u",
+            "syllabus_raw": "<p>blah blah</p>",
+            "original_image": {
+                "src": "https://prod-discovery.edx-cdn.org/media/course/image/fe2f341e.jpg",
+                "description": None,
+                "height": None,
+                "width": None
+            },
             "card_image_url": None,
             "canonical_course_run_key": "course-v1:edX+DemoX+Demo_Course",
             "extra_description": None,
             "additional_information": "",
             "additional_metadata": {
-                "external_identifier": "",
-                "external_url": "http://www.edx.org",
-                "lead_capture_form_url": "",
-                "facts": [],
-                "certificate_info": None,
-                "organic_url": "",
-                "start_date": "2023-01-01T17:29:21Z",
-                "end_date": "2023-08-31T17:29:25Z",
-                "registration_deadline": "2023-05-31T17:29:42Z",
-                "variant_id": None,
-                "course_term_override": None,
+                "external_identifier": "6b255ba4-d149-4707-a929-7b71f2cc5c91",
+                "external_url": "https://uct-online.getsmarter.com/presentations/lp/",
+                "lead_capture_form_url": "https://www.getsmarter.com/presentations/form?id=6b255ba4-5c91",
+                "facts": [
+                    {
+                        "heading": "75%",
+                        "blurb": "<p></p>"
+                    },
+                    {
+                        "heading": "22%",
+                        "blurb": "<p></p>"
+                    }
+                ],
+                "certificate_info": {
+                    "heading": "About the certificate",
+                    "blurb": "<p>Streamline your supply chain.</p>"
+                },
+                "organic_url": "https://www.getsmarter.com/products/",
+                "start_date": "2023-06-19T00:00:00Z",
+                "end_date": "2023-08-11T23:59:59Z",
+                "registration_deadline": "2023-06-13T23:59:59Z",
+                "variant_id": "5a2f2f9e-b59d-4fcf-8f0f-a728e31f38ce",
+                "course_term_override": "",
                 "product_status": "published",
                 "product_meta": None,
-                "external_course_marketing_type": None
+                "external_course_marketing_type": "short_course"
             },
             "faq": "",
-            "learner_testimonials": "",
-            "enrollment_count": 0,
+            "enrollment_count": 1,
             "recent_enrollment_count": 0,
-            "topics": [],
+            "topics": [
+                "vertical_executive-education",
+                "brand_capetown",
+                "location_south-africa",
+                "category_management",
+                "category_supply-chain"
+            ],
             "key_for_reruns": "",
             "url_slug_history": [
-                "introduction-to-computer-science"
+                "supply-chain-management",
+                "supply-chain-management-course-v1uctscm1t2022a",
+                "uct-supply-chain-management-online-short-course"
             ],
             "url_redirects": [],
             "course_run_statuses": [
@@ -170,11 +216,28 @@ COURSES_ENDPOINT_RESPONSE = {
             ],
             "editors": [],
             "collaborators": [],
-            "skill_names": [],
-            "skills": [],
-            "organization_short_code_override": "",
-            "organization_logo_override_url": None,
-            "geolocation": None,
+            "skill_names": [
+                "Purchasing",
+                "Supply Chain",
+                "Inventory Control",
+                "Supply Chain Integration",
+                "Supply Chain Management",
+                "Leadership",
+                "Customer Service",
+                "Blobs",
+                "Marketing",
+                "Innovation",
+                "Change Management",
+                "Ruby On Rails",
+                "Sales"
+            ],
+            "organization_short_code_override": "University of Cape Town",
+            "organization_logo_override_url": "https://prod-discovery.edx-cdn.org/organization/logoimg.png",
+            "geolocation": {
+                "lat": "-33.95744730000",
+                "lng": "18.46114545000",
+                "location_name": "university of cape town"
+            },
             "location_restriction": None,
             "in_year_value": None,
             "product_source": {
@@ -182,27 +245,13 @@ COURSES_ENDPOINT_RESPONSE = {
                 "slug": "2u",
                 "description": "2U, Trilogy, Getsmarter -- external source for 2u courses and programs"
             },
-            "data_modified_timestamp": "2023-04-10T20:09:07Z",
-            "programs": [
-                {
-                    "uuid": "67147f14-8aa4-492f-a1b3-582e13aa03d5",
-                    "title": "edX Demonstration Program",
-                    "type": "MicroMasters",
-                    "type_attrs": {
-                        "uuid": "314d608e-a831-48ce-a92d-9c3d795dc9b3",
-                        "slug": "micromasters",
-                        "coaching_supported": False
-                    },
-                    "marketing_slug": "demo-program",
-                    "marketing_url": "micromasters/demo-program",
-                    "number_of_courses": 1
-                }
-            ],
+            "data_modified_timestamp": "2023-06-06T13:03:44.184967Z",
+            "programs": [],
             "course_run_keys": [
                 "course-v1:edX+DemoX+Demo_Course"
             ],
             "editable": True,
-            "advertised_course_run_uuid": "8db5692e-dfdd-4fe0-ba29-e30e793e6ae6"
+            "advertised_course_run_uuid": "e1760190-2ac3-453b-a371-02f32cc701d8"
         },
         {
             "key": "edX+E2E-101",
@@ -220,7 +269,7 @@ COURSES_ENDPOINT_RESPONSE = {
                         "height": None,
                         "width": None
                     },
-                    "short_description": "An introduction to programming using Python, a popular language for ia",
+                    "short_description": "An introduction to programming using Python, a popular language.",
                     "marketing_url": "course/ai-course?utm_source=discovery_worker&utm_medium=affiliate_partner",
                     "seats": [
                         {
@@ -348,7 +397,11 @@ COURSES_ENDPOINT_RESPONSE = {
             "geolocation": None,
             "location_restriction": None,
             "in_year_value": None,
-            "product_source": None,
+            "product_source": {
+                "name": "edX",
+                "slug": "edx",
+                "description": ""
+            },
             "data_modified_timestamp": None,
             "programs": [],
             "course_run_keys": [

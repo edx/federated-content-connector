@@ -22,11 +22,11 @@ class CourseDetails(TimeStampedModel):
 
     course_type = models.CharField(
         max_length=255,
-        help_text='Type of course. For example "Masters, Verified, Audit", "Verified and Audit" etc'
+        help_text='Type of course. For example Masters, Verified, Audit, executive-education-2u,  etc'
     )
     product_source = models.CharField(
         max_length=255,
-        help_text='Tells about the origin of a course. For example, ??'
+        help_text='Tells about the origin of a course. For example, edx, 2u'
     )
     start_date = models.DateTimeField(
         null=True,

@@ -67,13 +67,13 @@ class TestImportCourserunsMetadataCommand(TestCase):
         course_details = CourseDetails.objects.get(id=self.courserun_locators()[0])
         assert course_details.course_type == 'executive-education-2u'
         assert course_details.product_source == '2u'
-        assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2023, 1, 1, 17, 29, 21)
-        assert course_details.end_date.replace(tzinfo=None) == datetime.datetime(2023, 8, 31, 17, 29, 25)
-        assert course_details.enroll_by.replace(tzinfo=None) == datetime.datetime(2023, 5, 31, 17, 29, 42)
+        assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2023, 6, 19, 0, 0, 0)
+        assert course_details.end_date.replace(tzinfo=None) == datetime.datetime(2023, 8, 11, 23, 59, 59)
+        assert course_details.enroll_by.replace(tzinfo=None) == datetime.datetime(2023, 6, 13, 23, 59, 59)
 
         course_details = CourseDetails.objects.get(id=self.courserun_locators()[1])
         assert course_details.course_type == 'verified-audit'
-        assert course_details.product_source == ''
+        assert course_details.product_source == 'edx'
         assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2022, 9, 11, 12, 1, 8)
         assert course_details.end_date is None
         assert course_details.enroll_by is None
