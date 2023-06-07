@@ -62,3 +62,6 @@ docs/federated_content_connector.*.rst
 # Private requirements
 requirements/private.in
 requirements/private.txt
+
+# test database
+default.db
