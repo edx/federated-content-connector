@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.0.1 – 2023-06-14
+------------------
+* Update courserun seat sorting logic.
+
 1.0.0 – 2023-06-06
 ------------------
 * Fetch course metadata from discovery and store.

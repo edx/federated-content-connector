@@ -157,10 +157,13 @@ class CourseMetadataImporter:
         """
         Parse and extract the minimal data that we need.
         """
+        log_prefix = 'COURSE_METADATA_IMPORTER'
+
         courses = {}
         for courserun_locator in courserun_locators:
             course_key = cls.construct_course_key(courserun_locator)
             courserun_key = str(courserun_locator)
+            logger.info(f'[{log_prefix}] Process. CourserunKey: {courserun_key}, CourseKey: {course_key}')
             course_metadata = cls.find_attr(courses_details, 'key', course_key)
             if not course_metadata:
                 logger.info(f'[COURSE_METADATA_IMPORTER] Metadata not found. CourseKey: {course_key}')
@@ -186,6 +189,10 @@ class CourseMetadataImporter:
                     enroll_by = seat.get('upgrade_deadline')
                     start_date = course_run.get('start')
                     end_date = course_run.get('end')
+                else:
+                    logger.info(
+                        f'[{log_prefix}] Courserun not found. CourserunKey: {courserun_key}, CourseKey: {course_key}'
+                    )
 
             course_data = {
                 'course_type': course_type,
@@ -214,7 +221,17 @@ class CourseMetadataImporter:
         """
         Find the seat by best course mode.
         """
-        return sorted(seats, key=lambda x: BEST_MODE_ORDER.index(x['type']))[0]
+        def sort_key(mode):
+            """
+            Assign a weight to the seat dictionary based on the position of its type in best moode order list.
+            """
+            mode_type = mode['type']
+            if mode_type in BEST_MODE_ORDER:
+                return len(BEST_MODE_ORDER) - BEST_MODE_ORDER.index(mode_type)
+            else:
+                return 0
+
+        return sorted(seats, key=sort_key, reverse=True)[0]
 
     @classmethod
     def chunks(cls, keys, chunk_size=50):
