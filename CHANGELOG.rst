@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.0.3 – 2023-06-15
+------------------
+* backfill all data
+
 1.0.2 – 2023-06-15
 ------------------
 * Handle empty courserun seats.
