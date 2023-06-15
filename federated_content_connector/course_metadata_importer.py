@@ -107,24 +107,15 @@ class CourseMetadataImporter:
     def courserun_locators_to_import(cls):
         """
         Construct list of active course locators for which we want to import data.
-
-        We will exclude the courseruns which are already imported.
         """
-        course_overviews = CourseOverview.get_all_courses()
-        course_details_ids = list(CourseDetails.objects.all().values_list('id', flat=True))
-
-        logger.info(
-            f'[COURSE_METADATA_IMPORTER] Already imported courseruns will be excluded. Keys: {course_details_ids}'
-        )
-
         now = datetime.datetime.now(pytz.UTC)
-        return list(course_overviews.filter(
+        return list(CourseOverview.objects.filter(
             Q(end__gt=now) &
             (
                 Q(enrollment_end__gt=now) |
                 Q(enrollment_end__isnull=True)
             )
-        ).exclude(id__in=course_details_ids).values_list(
+        ).values_list(
             'id',
             flat=True
         ))
