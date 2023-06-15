@@ -14,6 +14,11 @@ Change Log
 Unreleased
 ----------
 
+1.0.2 – 2023-06-15
+------------------
+* Handle empty courserun seats.
+* Add limit query param in api call
+
 1.0.1 – 2023-06-14
 ------------------
 * Update courserun seat sorting logic.
