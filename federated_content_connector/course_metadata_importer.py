@@ -2,7 +2,7 @@
 
 import datetime
 import logging
-from urllib.parse import quote_plus, urljoin
+from urllib.parse import quote_plus, urlencode, urljoin
 
 import pytz
 from common.djangoapps.course_modes.models import CourseMode
@@ -142,6 +142,34 @@ class CourseMetadataImporter:
             logger.info(f'[COURSE_METADATA_IMPORTER] Courses not found in discovery. Courses: {courses_not_found}')
 
         return results
+
+    @classmethod
+    def courses(cls, timestamp):
+        """Fetch courses updated since `timestamp`."""
+        query_params = {
+            'timestamp': timestamp,
+            'limit': 50
+        }
+        client = cls.get_api_client()
+        api_base_url = get_catalog_api_base_url()
+        params = urlencode(query_params)
+        api_url = urljoin(f"{api_base_url}/", f"courses/?{params}")
+        results, next_url, total = cls.get_api_reponse(client, api_url)
+        logger.info(f'[COURSE_METADATA_IMPORTER] Total Records are {total}')
+        yield results
+
+        while next_url:
+            results, next_url, __ = cls.get_api_reponse(client, next_url)
+            yield results
+
+    @classmethod
+    def get_api_reponse(cls, client, api_url):
+        """Get response from API."""
+        response = client.get(api_url)
+        response.raise_for_status()
+        courses = response.json()
+        results = courses.get('results', [])
+        return results, courses.get('next'), courses.get('count')
 
     @classmethod
     def process_courses_details(cls, courserun_locators, courses_details):

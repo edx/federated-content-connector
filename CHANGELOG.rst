@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.1.0 – 2023-06-21
+------------------
+* Management command to refresh CourseDetails data
+
 1.0.3 – 2023-06-15
 ------------------
 * backfill all data
