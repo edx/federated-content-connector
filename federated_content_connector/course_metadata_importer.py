@@ -138,7 +138,7 @@ class CourseMetadataImporter:
         encoded_course_keys = ','.join(map(quote_plus, course_keys))
 
         logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Courses {course_keys}.')
-        api_url = urljoin(f"{api_base_url}/", f"courses/?keys={encoded_course_keys}")
+        api_url = urljoin(f"{api_base_url}/", f"courses/?limit=50&keys={encoded_course_keys}")
         response = client.get(api_url)
         response.raise_for_status()
         courses_details = response.json()
@@ -186,7 +186,12 @@ class CourseMetadataImporter:
                 course_run = cls.find_attr(course_metadata.get('course_runs'), 'key', courserun_key)
                 if course_run:
                     seat = cls.find_best_mode_seat(course_run.get('seats'))
-                    enroll_by = seat.get('upgrade_deadline')
+                    if seat:
+                        enroll_by = seat.get('upgrade_deadline')
+                    else:
+                        logger.info(
+                            f"[{log_prefix}] No Seat Found. Seats: {course_run.get('seats')}"
+                        )
                     start_date = course_run.get('start')
                     end_date = course_run.get('end')
                 else:
@@ -231,7 +236,11 @@ class CourseMetadataImporter:
             else:
                 return 0
 
-        return sorted(seats, key=sort_key, reverse=True)[0]
+        sorted_seats = sorted(seats, key=sort_key, reverse=True)
+        if sorted_seats:
+            return sorted_seats[0]
+
+        return None
 
     @classmethod
     def chunks(cls, keys, chunk_size=50):
