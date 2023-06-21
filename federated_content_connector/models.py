@@ -47,3 +47,45 @@ class CourseDetails(TimeStampedModel):
         """
 
         app_label = 'federated_content_connector'
+
+
+class CourseDetailsImportStatus(TimeStampedModel):
+    """
+    CourseDetails import status history.
+
+    .. no_pii:
+    """
+
+    TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+
+    last_successful_import_at = models.DateTimeField(help_text='Timestamp of last data import')
+
+    @classmethod
+    def last_successful_import_timestamp(cls):
+        """
+        Return `last_successful_import_at`.
+        """
+        last_import = cls.objects.first()
+        if last_import:
+            return last_import.last_successful_import_at.strftime(cls.TIMESTAMP_FORMAT)
+
+        return None
+
+    @classmethod
+    def save_last_successful_import_timestamp(cls, timestamp):
+        """
+        Save `last_successful_import_at`.
+        """
+        last_import = cls.objects.first()
+        if last_import:
+            last_import.last_successful_import_at = timestamp
+            last_import.save()
+        else:
+            cls.objects.create(last_successful_import_at=timestamp)
+
+    class Meta:
+        """
+        Meta class for CourseDetailsImportStatus.
+        """
+
+        app_label = 'federated_content_connector'
