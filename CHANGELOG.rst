@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.2.0 – 2023-07-18
+------------------
+* Refactor `import_course_runs_metadata` command to import all courseruns
+
 1.1.0 – 2023-06-21
 ------------------
 * Management command to refresh CourseDetails data
