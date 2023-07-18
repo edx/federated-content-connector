@@ -1,20 +1,17 @@
 """Course metadata importer."""
 
-import datetime
 import logging
 from urllib.parse import quote_plus, urlencode, urljoin
 
-import pytz
 from common.djangoapps.course_modes.models import CourseMode
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 from openedx.core.djangoapps.catalog.models import CatalogIntegration
 from openedx.core.djangoapps.catalog.utils import get_catalog_api_base_url, get_catalog_api_client
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
+from federated_content_connector.constants import BOOTCAMP_2U, EXEC_ED_COURSE_TYPE
 from federated_content_connector.models import CourseDetails
 
-EXEC_ED_COURSE_TYPE = "executive-education-2u"
 BEST_MODE_ORDER = [
     CourseMode.VERIFIED,
     CourseMode.PROFESSIONAL,
@@ -106,19 +103,9 @@ class CourseMetadataImporter:
     @classmethod
     def courserun_locators_to_import(cls):
         """
-        Construct list of active course locators for which we want to import data.
+        Construct list of all course locators for which we want to import data.
         """
-        now = datetime.datetime.now(pytz.UTC)
-        return list(CourseOverview.objects.filter(
-            Q(end__gt=now) &
-            (
-                Q(enrollment_end__gt=now) |
-                Q(enrollment_end__isnull=True)
-            )
-        ).values_list(
-            'id',
-            flat=True
-        ))
+        return list(CourseOverview.objects.all().values_list('id', flat=True))
 
     @classmethod
     def fetch_courses_details(cls, client, courserun_locators, api_base_url):
@@ -195,7 +182,7 @@ class CourseMetadataImporter:
 
             enroll_by = start_date = end_date = None
 
-            if course_type == EXEC_ED_COURSE_TYPE:
+            if course_type in (EXEC_ED_COURSE_TYPE, BOOTCAMP_2U):
                 additional_metadata = course_metadata.get('additional_metadata')
                 if additional_metadata:
                     enroll_by = additional_metadata.get('registration_deadline')
