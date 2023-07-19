@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.2.1 – 2023-08-03
+------------------
+* feat: hook for modify course enrollment data
+
 1.2.0 – 2023-07-18
 ------------------
 * Refactor `import_course_runs_metadata` command to import all courseruns
