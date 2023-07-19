@@ -1,9 +1,11 @@
 """Open edx Filters Pipeline for the federated content connector."""
 from django.conf import settings
+from django.utils import timezone
 from openedx.core.djangoapps.catalog.utils import get_course_data
 from openedx_filters import PipelineStep
 
 from federated_content_connector.constants import EXEC_ED_COURSE_TYPE, EXEC_ED_LANDING_PAGE, PRODUCT_SOURCE_2U
+from federated_content_connector.models import CourseDetails
 
 
 class CreateCustomUrlForCourseStep(PipelineStep):
@@ -38,3 +40,36 @@ class CreateCustomUrlForCourseStep(PipelineStep):
                 course_home_url = getattr(settings, 'EXEC_ED_LANDING_PAGE', EXEC_ED_LANDING_PAGE)
 
         return {'course_key': course_key, 'course_home_url': course_home_url}
+
+
+class CreateIsStartedForCourseStep(PipelineStep):
+    """
+    Step that modifies the isStarted field for the course.
+
+    Example usage:
+
+    Add the following configurations to your configuration file:
+
+        "OPEN_EDX_FILTERS_CONFIG": {
+            "org.openedx.learning.course.is.started.creation.started.v1": {
+                "fail_silently": False,
+                "pipeline": [
+                    "federated_content_connector.filters.pipeline.CreateIsStartedForCourseStep"
+                ]
+            }
+        }
+    """
+
+    def run_filter(self, course_key, is_started):  # pylint: disable=arguments-differ
+        """
+        Pipeline step that modifies the isStarted field for the course.
+        """
+        try:
+            course_details = CourseDetails.objects.get(id=course_key)
+            start_date = course_details.start_date
+            if start_date and start_date <= timezone.now():
+                is_started = True
+        except CourseDetails.DoesNotExist:
+            pass
+
+        return {'course_key': course_key, 'is_started': is_started}
