@@ -1,8 +1,11 @@
 """Open edx Filters Pipeline for the federated content connector."""
+from datetime import datetime
+
 from django.conf import settings
 from django.utils import timezone
 from openedx.core.djangoapps.catalog.utils import get_course_data
 from openedx_filters import PipelineStep
+from pytz import utc
 
 from federated_content_connector.constants import EXEC_ED_COURSE_TYPE, EXEC_ED_LANDING_PAGE, PRODUCT_SOURCE_2U
 from federated_content_connector.models import CourseDetails
@@ -76,3 +79,46 @@ class CreateApiRenderEnrollmentStep(PipelineStep):
             pass
 
         return {'course_key': course_key, 'serialized_enrollment': serialized_enrollment}
+
+
+class CreateApiRenderCourseRunStep(PipelineStep):
+    """
+    Step that modifies the courserun data for the course.
+
+    Example usage:
+
+    Add the following configurations to your configuration file:
+
+        "OPEN_EDX_FILTERS_CONFIG": {
+            "org.openedx.learning.home.courserun.api.rendered.started.v1": {
+                "fail_silently": False,
+                "pipeline": [
+                    "federated_content_connector.filters.pipeline.CreateApiRenderCourseRunStep"
+                ]
+            }
+        }
+    """
+
+    def run_filter(self, serialized_courserun):  # pylint: disable=arguments-differ
+        """
+        Pipeline step that modifies the courserun data for the course.
+        """
+        try:
+            course_details = CourseDetails.objects.get(id=serialized_courserun.get('courseId'))
+            course_type = course_details.course_type
+            product_source = course_details.product_source
+            start_date, end_date = course_details.start_date, course_details.end_date
+
+            if product_source == PRODUCT_SOURCE_2U and course_type == EXEC_ED_COURSE_TYPE:
+                now_utc = datetime.now(utc)
+                serialized_courserun.update({
+                    'startDate': start_date,
+                    'endDate': end_date,
+                    'isStarted': now_utc > start_date if start_date is not None else True,
+                    'isArchived': now_utc > end_date if end_date is not None else False
+                })
+
+        except CourseDetails.DoesNotExist:
+            pass
+
+        return {'serialized_courserun': serialized_courserun}

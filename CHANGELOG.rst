@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.3.0 – 2023-08-18
+------------------
+* feat: hook to modify courserun data for B2C dashboard
+
 1.2.1 – 2023-08-03
 ------------------
 * feat: hook for modify course enrollment data
