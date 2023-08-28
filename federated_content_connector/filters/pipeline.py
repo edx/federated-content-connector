@@ -107,6 +107,7 @@ class CreateApiRenderCourseRunStep(PipelineStep):
             course_details = CourseDetails.objects.get(id=serialized_courserun.get('courseId'))
             course_type = course_details.course_type
             product_source = course_details.product_source
+            homeUrl = serialized_courserun.get('homeUrl')
             start_date, end_date = course_details.start_date, course_details.end_date
 
             if product_source == PRODUCT_SOURCE_2U and course_type == EXEC_ED_COURSE_TYPE:
@@ -115,7 +116,8 @@ class CreateApiRenderCourseRunStep(PipelineStep):
                     'startDate': start_date,
                     'endDate': end_date,
                     'isStarted': now_utc > start_date if start_date is not None else True,
-                    'isArchived': now_utc > end_date if end_date is not None else False
+                    'isArchived': now_utc > end_date if end_date is not None else False,
+                    'resumeUrl': homeUrl
                 })
 
         except CourseDetails.DoesNotExist:

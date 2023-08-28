@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.3.1 – 2023-08-28
+------------------
+* fix: resumeUrl for exec-ed courses in B2C dashboard
+
 1.3.0 – 2023-08-18
 ------------------
 * feat: hook to modify courserun data for B2C dashboard
