@@ -7,3 +7,4 @@ edx-django-utils
 edx-opaque-keys
 django-extensions
 celery
+backoff
