@@ -14,6 +14,11 @@ Change Log
 Unreleased
 ----------
 
+1.3.2 – 2023-09-04
+------------------
+* add `include_hidden_course_runs` query param to fetch hidden courseruns
+* add retry decorator to handle exceptions during calls to `/courses` api
+
 1.3.1 – 2023-08-28
 ------------------
 * fix: resumeUrl for exec-ed courses in B2C dashboard

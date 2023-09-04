@@ -12,17 +12,19 @@ asgiref==3.7.2
     # via
     #   -r requirements/base.txt
     #   django
-billiard==3.6.4.0
+backoff==2.2.1
+    # via -r requirements/base.txt
+billiard==4.1.0
     # via
     #   -r requirements/base.txt
     #   celery
-celery==5.2.7
+celery==5.3.4
     # via -r requirements/base.txt
 cffi==1.15.1
     # via
     #   -r requirements/base.txt
     #   pynacl
-click==8.1.3
+click==8.1.7
     # via
     #   -r requirements/base.txt
     #   celery
@@ -39,13 +41,13 @@ click-plugins==1.1.1
     # via
     #   -r requirements/base.txt
     #   celery
-click-repl==0.2.0
+click-repl==0.3.0
     # via
     #   -r requirements/base.txt
     #   celery
-code-annotations==1.3.0
+code-annotations==1.5.0
     # via -r requirements/test.in
-coverage[toml]==7.2.7
+coverage[toml]==7.3.0
     # via pytest-cov
 ddt==1.6.0
     # via -r requirements/test.in
@@ -54,39 +56,40 @@ ddt==1.6.0
     #   -r requirements/base.txt
     #   django-crum
     #   django-extensions
+    #   django-waffle
     #   edx-django-utils
     #   openedx-filters
 django-crum==0.7.9
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-django-extensions==3.2.1
+django-extensions==3.2.3
     # via -r requirements/base.txt
-django-waffle==3.0.0
+django-waffle==4.0.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-edx-django-utils==5.4.0
+edx-django-utils==5.7.0
     # via -r requirements/base.txt
-edx-opaque-keys==2.3.0
+edx-opaque-keys==2.5.0
     # via -r requirements/base.txt
-exceptiongroup==1.1.1
+exceptiongroup==1.1.3
     # via pytest
 iniconfig==2.0.0
     # via pytest
 jinja2==3.1.2
     # via code-annotations
-kombu==5.2.4
+kombu==5.3.2
     # via
     #   -r requirements/base.txt
     #   celery
-markupsafe==2.1.2
+markupsafe==2.1.3
     # via jinja2
-newrelic==8.8.0
+newrelic==9.0.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-openedx-filters==1.3.0
+openedx-filters==1.6.0
     # via -r requirements/base.txt
 packaging==23.1
     # via pytest
@@ -94,9 +97,9 @@ pbr==5.11.1
     # via
     #   -r requirements/base.txt
     #   stevedore
-pluggy==1.0.0
+pluggy==1.3.0
     # via pytest
-prompt-toolkit==3.0.38
+prompt-toolkit==3.0.39
     # via
     #   -r requirements/base.txt
     #   click-repl
@@ -116,7 +119,7 @@ pynacl==1.5.0
     # via
     #   -r requirements/base.txt
     #   edx-django-utils
-pytest==7.3.1
+pytest==7.4.1
     # via
     #   pytest-cov
     #   pytest-django
@@ -124,19 +127,22 @@ pytest-cov==4.1.0
     # via -r requirements/test.in
 pytest-django==4.5.2
     # via -r requirements/test.in
+python-dateutil==2.8.2
+    # via
+    #   -r requirements/base.txt
+    #   celery
 python-slugify==8.0.1
     # via code-annotations
 pytz==2023.3
     # via
     #   -r requirements/base.txt
-    #   celery
     #   django
-pyyaml==6.0
+pyyaml==6.0.1
     # via code-annotations
 six==1.16.0
     # via
     #   -r requirements/base.txt
-    #   click-repl
+    #   python-dateutil
 sqlparse==0.4.4
     # via
     #   -r requirements/base.txt
@@ -153,10 +159,16 @@ tomli==2.0.1
     # via
     #   coverage
     #   pytest
-typing-extensions==4.6.2
+typing-extensions==4.7.1
     # via
     #   -r requirements/base.txt
     #   asgiref
+    #   edx-opaque-keys
+    #   kombu
+tzdata==2023.3
+    # via
+    #   -r requirements/base.txt
+    #   celery
 vine==5.0.0
     # via
     #   -r requirements/base.txt

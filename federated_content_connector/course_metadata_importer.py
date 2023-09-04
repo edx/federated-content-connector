@@ -3,6 +3,7 @@
 import logging
 from urllib.parse import quote_plus, urlencode, urljoin
 
+import backoff
 from common.djangoapps.course_modes.models import CourseMode
 from django.contrib.auth import get_user_model
 from openedx.core.djangoapps.catalog.models import CatalogIntegration
@@ -116,8 +117,10 @@ class CourseMetadataImporter:
         encoded_course_keys = ','.join(map(quote_plus, course_keys))
 
         logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Courses {course_keys}.')
-        api_url = urljoin(f"{api_base_url}/", f"courses/?limit=50&keys={encoded_course_keys}")
-        response = client.get(api_url)
+        api_url = urljoin(
+            f"{api_base_url}/", f"courses/?limit=50&include_hidden_course_runs=1&keys={encoded_course_keys}"
+        )
+        response = cls.get_response_from_api(client, api_url)
         response.raise_for_status()
         courses_details = response.json()
         results = courses_details.get('results', [])
@@ -135,7 +138,8 @@ class CourseMetadataImporter:
         """Fetch courses updated since `timestamp`."""
         query_params = {
             'timestamp': timestamp,
-            'limit': 50
+            'limit': 50,
+            'include_hidden_course_runs': 1,
         }
         client = cls.get_api_client()
         api_base_url = get_catalog_api_base_url()
@@ -152,11 +156,31 @@ class CourseMetadataImporter:
     @classmethod
     def get_api_reponse(cls, client, api_url):
         """Get response from API."""
-        response = client.get(api_url)
+        response = cls.get_response_from_api(client, api_url)
         response.raise_for_status()
         courses = response.json()
         results = courses.get('results', [])
         return results, courses.get('next'), courses.get('count')
+
+    @classmethod
+    def get_response_from_api(cls, client, api_url):
+        """
+        Call api endpoint and return response.
+        """
+
+        @backoff.on_exception(
+            backoff.expo,
+            Exception,
+            max_tries=3,
+            logger=logger,
+        )
+        def call_api():
+            """
+            Call api endpoint.
+            """
+            return client.get(api_url)
+
+        return call_api()
 
     @classmethod
     def process_courses_details(cls, courserun_locators, courses_details):
