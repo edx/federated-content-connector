@@ -11,10 +11,7 @@ from opaque_keys.edx.keys import CourseKey
 
 from federated_content_connector.management.commands import refresh_course_runs_metadata
 from federated_content_connector.management.commands.import_course_runs_metadata import CourseMetadataImporter
-from federated_content_connector.management.commands.tests.mock_responses import (
-    COURSES_ENDPOINT_RESPONSE,
-    REFRESH_RESPONSE,
-)
+from federated_content_connector.management.commands.tests.test_utils import COURSES_ENDPOINT_RESPONSE, REFRESH_RESPONSE
 from federated_content_connector.models import CourseDetails, CourseDetailsImportStatus
 
 

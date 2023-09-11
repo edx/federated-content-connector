@@ -93,8 +93,12 @@ class CourseMetadataImporter:
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Importing metadata. Courses: {courserun_keys}')
 
-            course_details = cls.fetch_courses_details(client, courserun_locators_chunk, get_catalog_api_base_url())
-            processed_courses_details = cls.process_courses_details(courserun_locators_chunk, course_details)
+            course_details, courserun_with_course_uuids = cls.fetch_courses_details(
+                client,
+                courserun_locators_chunk,
+                get_catalog_api_base_url()
+            )
+            processed_courses_details = cls.process_courses_details(course_details, courserun_with_course_uuids)
             cls.store_courses_details(processed_courses_details)
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Import completed. Courses: {courserun_keys}')
@@ -113,25 +117,48 @@ class CourseMetadataImporter:
         """
         Fetch the course data from discovery using `/api/v1/courses` endpoint.
         """
-        course_keys = [cls.construct_course_key(courserun_locator) for courserun_locator in courserun_locators]
-        encoded_course_keys = ','.join(map(quote_plus, course_keys))
+        courserun_with_course_uuids = cls.fetch_course_uuids(client, api_base_url, courserun_locators)
+        course_uuids = courserun_with_course_uuids.values()
+        course_uuids_str = ','.join(course_uuids)
 
-        logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Courses {course_keys}.')
+        logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Course UUIDs {course_uuids}.')
         api_url = urljoin(
-            f"{api_base_url}/", f"courses/?limit=50&include_hidden_course_runs=1&keys={encoded_course_keys}"
+            f"{api_base_url}/", f"courses/?limit=50&include_hidden_course_runs=1&uuids={course_uuids_str}"
         )
         response = cls.get_response_from_api(client, api_url)
         response.raise_for_status()
         courses_details = response.json()
         results = courses_details.get('results', [])
 
-        # Find and log the course keys not found in course-discovery
-        course_keys_in_response = [result.get('key') for result in results]
-        courses_not_found = list(set(course_keys) - set(course_keys_in_response))
-        if courses_not_found:
-            logger.info(f'[COURSE_METADATA_IMPORTER] Courses not found in discovery. Courses: {courses_not_found}')
+        return results, courserun_with_course_uuids
 
-        return results
+    @classmethod
+    def fetch_course_uuids(cls, client, api_base_url, courserun_locators):
+        """
+        Return a map of courserun key and course uuid.
+        """
+        courserun_keys = list(map(str, courserun_locators))
+        encoded_courserun_keys = ','.join(map(quote_plus, courserun_keys))
+
+        logger.info(f'[COURSE_METADATA_IMPORTER] Fetching uuids for Courseruns {encoded_courserun_keys}')
+        api_url = urljoin(
+            f"{api_base_url}/", f"course_runs/?limit=50&include_hidden_course_runs=1&keys={encoded_courserun_keys}"
+        )
+        response = cls.get_response_from_api(client, api_url)
+        response.raise_for_status()
+        courses_details = response.json()
+        results = courses_details.get('results', [])
+
+        courserun_with_course_uuids = {}
+        for result in results:
+            courserun_key = result.get('key')
+
+            if courserun_key not in courserun_keys:
+                continue
+
+            courserun_with_course_uuids[courserun_key] = result.get('course_uuid')
+
+        return courserun_with_course_uuids
 
     @classmethod
     def courses(cls, timestamp):
@@ -183,20 +210,18 @@ class CourseMetadataImporter:
         return call_api()
 
     @classmethod
-    def process_courses_details(cls, courserun_locators, courses_details):
+    def process_courses_details(cls, courses_details, courserun_with_course_uuids):
         """
         Parse and extract the minimal data that we need.
         """
         log_prefix = 'COURSE_METADATA_IMPORTER'
 
         courses = {}
-        for courserun_locator in courserun_locators:
-            course_key = cls.construct_course_key(courserun_locator)
-            courserun_key = str(courserun_locator)
-            logger.info(f'[{log_prefix}] Process. CourserunKey: {courserun_key}, CourseKey: {course_key}')
-            course_metadata = cls.find_attr(courses_details, 'key', course_key)
+        for courserun_key, course_uuid in courserun_with_course_uuids.items():
+            logger.info(f'[{log_prefix}] Process. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}')
+            course_metadata = cls.find_attr(courses_details, 'uuid', course_uuid)
             if not course_metadata:
-                logger.info(f'[COURSE_METADATA_IMPORTER] Metadata not found. CourseKey: {course_key}')
+                logger.info(f'[COURSE_METADATA_IMPORTER] Metadata not found. CourseUUID: {course_uuid}')
                 continue
 
             course_type = course_metadata.get('course_type') or ''
@@ -226,8 +251,9 @@ class CourseMetadataImporter:
                     end_date = course_run.get('end')
                 else:
                     logger.info(
-                        f'[{log_prefix}] Courserun not found. CourserunKey: {courserun_key}, CourseKey: {course_key}'
+                        f'[{log_prefix}] Courserun not found. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}'
                     )
+                    continue
 
             course_data = {
                 'course_type': course_type,
