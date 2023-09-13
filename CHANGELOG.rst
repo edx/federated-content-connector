@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.4.1 – 2023-09-13
+------------------
+* Remove inner function from `get_response_from_api`
+
 1.4.0 – 2023-09-12
 ------------------
 * Refactor to fetch course data using course uuid

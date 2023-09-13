@@ -190,24 +190,17 @@ class CourseMetadataImporter:
         return results, courses.get('next'), courses.get('count')
 
     @classmethod
+    @backoff.on_exception(
+        backoff.expo,
+        Exception,
+        max_tries=3,
+        logger=logger,
+    )
     def get_response_from_api(cls, client, api_url):
         """
         Call api endpoint and return response.
         """
-
-        @backoff.on_exception(
-            backoff.expo,
-            Exception,
-            max_tries=3,
-            logger=logger,
-        )
-        def call_api():
-            """
-            Call api endpoint.
-            """
-            return client.get(api_url)
-
-        return call_api()
+        return client.get(api_url)
 
     @classmethod
     def process_courses_details(cls, courses_details, courserun_with_course_uuids):
