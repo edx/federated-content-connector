@@ -2,7 +2,6 @@
 Tests for the `federated_content_connector` signals module.
 """
 
-from copy import deepcopy
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
@@ -10,34 +9,12 @@ import pytest
 from opaque_keys.edx.keys import CourseKey
 
 from federated_content_connector.management.commands.import_course_runs_metadata import CourseMetadataImporter
-from federated_content_connector.management.commands.tests.mock_responses import COURSES_ENDPOINT_RESPONSE
+from federated_content_connector.management.commands.tests.test_utils import side_effect_func
 from federated_content_connector.models import CourseDetails
 from federated_content_connector.signals import (
     handle_courseoverview_delete_course_details,
     handle_courseoverview_import_course_details,
 )
-
-
-class MockResponse:
-    """
-    Mock API response class.
-    """
-    def __init__(self, course_key=None, status_code=200):
-        self.status_code = status_code
-        self.course_key = course_key
-
-    def raise_for_status(self):
-        return True
-
-    def json(self):
-        """Return the json representation of response."""
-        if self.course_key:
-            response = deepcopy(COURSES_ENDPOINT_RESPONSE)
-            index = next((index for (item, index) in enumerate(response) if item["key"] == self.course_key), None)
-            response['results'].pop(index)
-            return response
-        else:
-            return COURSES_ENDPOINT_RESPONSE
 
 
 @pytest.mark.django_db
@@ -62,7 +39,7 @@ class TestSignals(TestCase):
         """
         # Mock api client and api responses
         mocked_get_api_client.return_value = MagicMock()
-        mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
+        mocked_get_api_client.return_value.get = MagicMock(side_effect=side_effect_func)
         mocked_courserun_locator.return_value = [self.courserun_locators[1]]
 
         assert CourseDetails.objects.count() == 0
@@ -81,7 +58,7 @@ class TestSignals(TestCase):
         """
         # Mock api client and api responses
         mocked_get_api_client.return_value = MagicMock()
-        mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
+        mocked_get_api_client.return_value.get = MagicMock(side_effect=side_effect_func)
         mocked_courserun_locator.return_value = self.courserun_locators
 
         # Import data

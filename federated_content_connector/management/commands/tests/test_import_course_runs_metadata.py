@@ -11,22 +11,8 @@ from opaque_keys.edx.keys import CourseKey
 
 from federated_content_connector.management.commands import import_course_runs_metadata
 from federated_content_connector.management.commands.import_course_runs_metadata import CourseMetadataImporter
-from federated_content_connector.management.commands.tests.mock_responses import COURSES_ENDPOINT_RESPONSE
+from federated_content_connector.management.commands.tests.test_utils import side_effect_func
 from federated_content_connector.models import CourseDetails
-
-
-class MockResponse:
-    """
-    Mock API response class.
-    """
-    def __init__(self, status_code=200):
-        self.status_code = status_code
-
-    def raise_for_status(self):
-        return True
-
-    def json(self):
-        return COURSES_ENDPOINT_RESPONSE
 
 
 @pytest.mark.django_db
@@ -57,7 +43,8 @@ class TestImportCourserunsMetadataCommand(TestCase):
         assert CourseDetails.objects.count() == 0
 
         mocked_get_api_client.return_value = MagicMock()
-        mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
+        mocked_get_api_client.return_value.get = MagicMock(side_effect=side_effect_func)
+        # mocked_get_api_client.return_value.get = MagicMock(return_value=MockResponse())
         mocked_courserun_locators_to_import.return_value = self.courserun_locators()
 
         call_command(self.command)

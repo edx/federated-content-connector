@@ -1,5 +1,12 @@
 """Mocked API Responses."""
 
+COURSE_RUNS_URL = '/api/v1/course_runs/'
+COURSES_URL = '/api/v1/courses/'
+
+RESPONSE_TYPE_COURSERUNS = 'courseruns'
+RESPONSE_TYPE_COURSES = 'courses'
+
+
 COURSES_ENDPOINT_RESPONSE = {
     "count": 2,
     "next": None,
@@ -825,3 +832,199 @@ REFRESH_RESPONSE = {
         }
     ]
 }
+
+COURSE_RUNS_ENDPOINT_RESPONSE = {
+    "count": 1,
+    "next": None,
+    "previous": None,
+    "results": [
+        {
+            "key": "course-v1:edX+DemoX+Demo_Course",
+            "uuid": "e1760190-2ac3-453b-a371-02f32cc701d8",
+            "title": "Supply Chain Management",
+            "external_key": None,
+            "image": {
+                "src": "https://prod-discovery.edx-cdn.org/media/course/image/fe2f341e.small.jpg",
+                "description": None,
+                "height": None,
+                "width": None
+            },
+            "short_description": "<p>Understand effective supply chain.</p>",
+            "marketing_url": "https://www.edx.org/course/suppl",
+            "seats": [
+                {
+                    "type": "unpaid-executive-education",
+                    "price": "0.00",
+                    "currency": "USD",
+                    "upgrade_deadline": None,
+                    "upgrade_deadline_override": None,
+                    "credit_provider": None,
+                    "credit_hours": None,
+                    "sku": "3A89869",
+                    "bulk_sku": None
+                }
+            ],
+            "start": "2022-03-14T00:00:00Z",
+            "end": "2022-05-27T23:59:59Z",
+            "go_live_date": "2023-06-06T00:00:00Z",
+            "enrollment_start": None,
+            "enrollment_end": None,
+            "weeks_to_complete": 8,
+            "pacing_type": "instructor_paced",
+            "type": None,
+            "run_type": "cff13320-a36f-40ed-b6d0-9df35e602528",
+            "status": "published",
+            "is_enrollable": True,
+            "is_marketable": True,
+            "availability": "Current",
+            "course": "UCT+SCM",
+            "full_description": "<p><strong>Duration:</strong> 8 weeks (excluding orientation)</p>",
+            "announcement": "2022-04-25T14:53:38.103538Z",
+            "video": {
+                "src": "https://www.youtube.com/embed/TNA9LYGptdc",
+                "description": None,
+                "image": None
+            },
+            "content_language": "en-us",
+            "license": "",
+            "outcome": "<p>On completion of this course</p>",
+            "transcript_languages": [
+                "en-us"
+            ],
+            "instructors": [],
+            "staff": [],
+            "min_effort": 6,
+            "max_effort": 8,
+            "modified": "2023-06-07T04:30:34.983860Z",
+            "level_type": "Introductory",
+            "mobile_available": False,
+            "hidden": False,
+            "reporting_type": "mooc",
+            "eligible_for_financial_aid": True,
+            "first_enrollable_paid_seat_price": None,
+            "has_ofac_restrictions": False,
+            "ofac_comment": "",
+            "enrollment_count": 1,
+            "recent_enrollment_count": 0,
+            "expected_program_type": None,
+            "expected_program_name": "",
+            "course_uuid": "fe2f341e-493d-42c4-8d0d-0661b490c2cb",
+            "estimated_hours": 56.0,
+            "content_language_search_facet_name": "English",
+            "enterprise_subscription_inclusion": False
+        },
+        {
+            "key": "course-v1:edX+E2E-101+course",
+            "uuid": "99e43fcd-0442-48c4-a32e-cd657d61907d",
+            "title": "AI Course",
+            "external_key": None,
+            "image": {
+                "src": "http://localhost:18381/media/media/course/image/abc.jpeg",
+                "description": None,
+                "height": None,
+                "width": None
+            },
+            "short_description": "An introduction to programming using Python, a popular language.",
+            "marketing_url": "course/ai-course?utm_source=discovery_worker&utm_medium=affiliate_partner",
+            "seats": [
+                {
+                    "type": "audit",
+                    "price": "0.00",
+                    "currency": "USD",
+                    "upgrade_deadline": None,
+                    "upgrade_deadline_override": None,
+                    "credit_provider": None,
+                    "credit_hours": None,
+                    "sku": "AUDIT_SEAT_123",
+                    "bulk_sku": None
+                },
+                {
+                    "type": "no-id-professional",
+                    "price": "149.00",
+                    "currency": "USD",
+                    "upgrade_deadline": "2024-09-11T12:01:08Z",
+                    "upgrade_deadline_override": None,
+                    "credit_provider": None,
+                    "credit_hours": None,
+                    "sku": "VERIFIED_SEAT_123",
+                    "bulk_sku": None
+                }
+            ],
+            "start": "2024-09-11T12:01:08Z",
+            "end": None,
+            "go_live_date": "2022-09-19T09:16:18Z",
+            "enrollment_start": "2022-09-19T09:16:25Z",
+            "enrollment_end": "2022-09-30T09:16:31Z",
+            "weeks_to_complete": 10,
+            "pacing_type": "self_paced",
+            "type": "verified",
+            "run_type": "2d598558-f94e-41f8-8829-01a0027d2d17",
+            "status": "published",
+            "is_enrollable": False,
+            "is_marketable": True,
+            "availability": "Current",
+            "course": "edX+E2E-101",
+            "full_description": "This is CS50x , Harvard University's introduction to the ia",
+            "announcement": None,
+            "video": None,
+            "content_language": "en-us",
+            "license": "",
+            "outcome": "",
+            "transcript_languages": [],
+            "instructors": [],
+            "staff": [],
+            "min_effort": 3,
+            "max_effort": 9,
+            "modified": "2022-10-04T14:02:22.640064Z",
+            "level_type": None,
+            "mobile_available": False,
+            "hidden": False,
+            "reporting_type": "mooc",
+            "eligible_for_financial_aid": True,
+            "first_enrollable_paid_seat_price": 149,
+            "has_ofac_restrictions": None,
+            "ofac_comment": "",
+            "enrollment_count": 0,
+            "recent_enrollment_count": 0,
+            "expected_program_type": None,
+            "expected_program_name": "",
+            "course_uuid": "990ac8b7-b71d-4db9-9d3b-9805ab2f7f71",
+            "estimated_hours": 60.0,
+            "content_language_search_facet_name": "English",
+            "enterprise_subscription_inclusion": True
+        }
+    ]
+}
+
+
+RESPONSES = {
+    RESPONSE_TYPE_COURSES: COURSES_ENDPOINT_RESPONSE,
+    RESPONSE_TYPE_COURSERUNS: COURSE_RUNS_ENDPOINT_RESPONSE,
+}
+
+
+class MockResponse:
+    """
+    Mock API response class.
+    """
+    def __init__(self, response_type, status_code=200):
+        self.status_code = status_code
+        self.response_type = response_type
+
+    def raise_for_status(self):
+        return True
+
+    def json(self):
+        return RESPONSES[self.response_type]
+
+
+def side_effect_func(url):
+    """
+    Side effect function for MagicMock.
+    """
+    if url.startswith(COURSES_URL):
+        response_type = RESPONSE_TYPE_COURSES
+    elif url.startswith(COURSE_RUNS_URL):
+        response_type = RESPONSE_TYPE_COURSERUNS
+
+    return MockResponse(response_type=response_type)

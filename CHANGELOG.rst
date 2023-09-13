@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.4.0 – 2023-09-12
+------------------
+* Refactor to fetch course data using course uuid
+
 1.3.2 – 2023-09-04
 ------------------
 * add `include_hidden_course_runs` query param to fetch hidden courseruns
