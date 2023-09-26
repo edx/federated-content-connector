@@ -84,9 +84,9 @@ class CourseMetadataImporter:
         """
         logger.info('[COURSE_METADATA_IMPORTER] Course metadata import started.')
 
-        client = cls.get_api_client()
-
         for courserun_locators_chunk in cls.chunks(courserun_locators):
+
+            client = cls.get_api_client()
 
             # convert course locator objects to courserun keys
             courserun_keys = list(map(str, courserun_locators_chunk))
