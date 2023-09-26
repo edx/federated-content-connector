@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.4.2 – 2023-09-26
+------------------
+* Refresh client token for requests
+
 1.4.1 – 2023-09-13
 ------------------
 * Remove inner function from `get_response_from_api`
