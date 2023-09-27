@@ -86,15 +86,12 @@ class CourseMetadataImporter:
 
         for courserun_locators_chunk in cls.chunks(courserun_locators):
 
-            client = cls.get_api_client()
-
             # convert course locator objects to courserun keys
             courserun_keys = list(map(str, courserun_locators_chunk))
 
             logger.info(f'[COURSE_METADATA_IMPORTER] Importing metadata. Courses: {courserun_keys}')
 
             course_details, courserun_with_course_uuids = cls.fetch_courses_details(
-                client,
                 courserun_locators_chunk,
                 get_catalog_api_base_url()
             )
@@ -113,11 +110,11 @@ class CourseMetadataImporter:
         return list(CourseOverview.objects.all().values_list('id', flat=True))
 
     @classmethod
-    def fetch_courses_details(cls, client, courserun_locators, api_base_url):
+    def fetch_courses_details(cls, courserun_locators, api_base_url):
         """
         Fetch the course data from discovery using `/api/v1/courses` endpoint.
         """
-        courserun_with_course_uuids = cls.fetch_course_uuids(client, api_base_url, courserun_locators)
+        courserun_with_course_uuids = cls.fetch_course_uuids(api_base_url, courserun_locators)
         course_uuids = courserun_with_course_uuids.values()
         course_uuids_str = ','.join(course_uuids)
 
@@ -125,15 +122,14 @@ class CourseMetadataImporter:
         api_url = urljoin(
             f"{api_base_url}/", f"courses/?limit=50&include_hidden_course_runs=1&uuids={course_uuids_str}"
         )
-        response = cls.get_response_from_api(client, api_url)
-        response.raise_for_status()
+        response = cls.get_response_from_api(api_url)
         courses_details = response.json()
         results = courses_details.get('results', [])
 
         return results, courserun_with_course_uuids
 
     @classmethod
-    def fetch_course_uuids(cls, client, api_base_url, courserun_locators):
+    def fetch_course_uuids(cls, api_base_url, courserun_locators):
         """
         Return a map of courserun key and course uuid.
         """
@@ -144,8 +140,7 @@ class CourseMetadataImporter:
         api_url = urljoin(
             f"{api_base_url}/", f"course_runs/?limit=50&include_hidden_course_runs=1&keys={encoded_courserun_keys}"
         )
-        response = cls.get_response_from_api(client, api_url)
-        response.raise_for_status()
+        response = cls.get_response_from_api(api_url)
         courses_details = response.json()
         results = courses_details.get('results', [])
 
@@ -168,23 +163,22 @@ class CourseMetadataImporter:
             'limit': 50,
             'include_hidden_course_runs': 1,
         }
-        client = cls.get_api_client()
+
         api_base_url = get_catalog_api_base_url()
         params = urlencode(query_params)
         api_url = urljoin(f"{api_base_url}/", f"courses/?{params}")
-        results, next_url, total = cls.get_api_reponse(client, api_url)
+        results, next_url, total = cls.get_api_reponse(api_url)
         logger.info(f'[COURSE_METADATA_IMPORTER] Total Records are {total}')
         yield results
 
         while next_url:
-            results, next_url, __ = cls.get_api_reponse(client, next_url)
+            results, next_url, __ = cls.get_api_reponse(next_url)
             yield results
 
     @classmethod
-    def get_api_reponse(cls, client, api_url):
+    def get_api_reponse(cls, api_url):
         """Get response from API."""
-        response = cls.get_response_from_api(client, api_url)
-        response.raise_for_status()
+        response = cls.get_response_from_api(api_url)
         courses = response.json()
         results = courses.get('results', [])
         return results, courses.get('next'), courses.get('count')
@@ -196,11 +190,15 @@ class CourseMetadataImporter:
         max_tries=3,
         logger=logger,
     )
-    def get_response_from_api(cls, client, api_url):
+    def get_response_from_api(cls, api_url):
         """
         Call api endpoint and return response.
         """
-        return client.get(api_url)
+        logger.info(f'[COURSE_METADATA_IMPORTER] API Call: URL: [{api_url}]')
+        client = cls.get_api_client()
+        response = client.get(api_url)
+        response.raise_for_status()
+        return response
 
     @classmethod
     def process_courses_details(cls, courses_details, courserun_with_course_uuids):

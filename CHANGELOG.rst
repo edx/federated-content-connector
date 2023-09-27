@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.4.3 – 2023-09-27
+------------------
+* Improvements in `import_course_runs_metadata` and `refresh_course_runs_metadata`
+
 1.4.2 – 2023-09-26
 ------------------
 * Refresh client token for requests
