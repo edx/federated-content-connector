@@ -54,7 +54,7 @@ class CourseMetadataImporter:
         """
         Import course metadata for all courses.
         """
-        logger.info('{COURSE_METADATA_IMPORTER} Course metadata import started for all courses.')
+        logger.info(f'[{cls.LOG_PREFIX}] Course metadata import started for all courses.')
         all_active_courserun_locators = cls.courserun_locators_to_import()
         cls.import_courses_metadata(all_active_courserun_locators)
         logger.info(f'[{cls.LOG_PREFIX}] Course metadata import completed for all courses.')
@@ -208,19 +208,14 @@ class CourseMetadataImporter:
                 logger.info(f'[{cls.LOG_PREFIX}] Metadata not found. CourseUUID: {course_uuid}')
                 continue
 
-            course_type = course_metadata.get('course_type') or ''
-            product_source = course_metadata.get('product_source') or ''
-            if product_source:
-                product_source = product_source.get('slug')
-
-            enroll_by = start_date = end_date = None
-
             course_run = cls.find_attr(course_metadata.get('course_runs'), 'key', courserun_key)
             if not course_run:
                 logger.info(
                     f'[{cls.LOG_PREFIX}] Courserun not found. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}'
                 )
                 continue
+
+            enroll_by = start_date = end_date = None
 
             # Determine start & end dates for course run
             start_date = course_run.get('start')
@@ -244,6 +239,12 @@ class CourseMetadataImporter:
                 logger.info(
                     f"[{cls.LOG_PREFIX}] No enroll by date found for course run {courserun_key}"
                 )
+
+            # Deduce the course type and product source from course metadata.
+            course_type = course_metadata.get('course_type') or ''
+            product_source = course_metadata.get('product_source') or ''
+            if product_source:
+                product_source = product_source.get('slug')
 
             # Co-locate courserun metadata into a dict and store it within `courses`.
             course_data = {

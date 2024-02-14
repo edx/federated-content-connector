@@ -36,8 +36,6 @@ coverage.xml
 htmlcov/
 pii_report/
 
-
-
 # The Silver Searcher
 .agignore
 
