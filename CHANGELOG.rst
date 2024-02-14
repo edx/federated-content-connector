@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.4.4 – 2024-02-14
+------------------
+* No longer rely on `additional_metadata` field to extract metadata such as start, end, and enroll by dates for external courses. Instead, pull directly from the course runs metadata instead.
+
 1.4.3 – 2023-09-27
 ------------------
 * Improvements in `import_course_runs_metadata` and `refresh_course_runs_metadata`

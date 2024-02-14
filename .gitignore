@@ -34,8 +34,7 @@ pip-log.txt
 .tox
 coverage.xml
 htmlcov/
-
-
+pii_report/
 
 # The Silver Searcher
 .agignore

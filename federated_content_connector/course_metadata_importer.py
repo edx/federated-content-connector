@@ -10,7 +10,6 @@ from openedx.core.djangoapps.catalog.models import CatalogIntegration
 from openedx.core.djangoapps.catalog.utils import get_catalog_api_base_url, get_catalog_api_client
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
-from federated_content_connector.constants import BOOTCAMP_2U, EXEC_ED_COURSE_TYPE
 from federated_content_connector.models import CourseDetails
 
 BEST_MODE_ORDER = [
@@ -29,6 +28,8 @@ class CourseMetadataImporter:
     """
     Import course metadata from discovery.
     """
+
+    LOG_PREFIX = 'COURSE_METADATA_IMPORTER'
 
     @classmethod
     def get_api_client(cls):
@@ -53,12 +54,10 @@ class CourseMetadataImporter:
         """
         Import course metadata for all courses.
         """
-        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import started for all courses.')
-
+        logger.info(f'[{cls.LOG_PREFIX}] Course metadata import started for all courses.')
         all_active_courserun_locators = cls.courserun_locators_to_import()
         cls.import_courses_metadata(all_active_courserun_locators)
-
-        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
+        logger.info(f'[{cls.LOG_PREFIX}] Course metadata import completed for all courses.')
 
     @classmethod
     def import_specific_courses_metadata(cls, courserun_locators):
@@ -68,11 +67,9 @@ class CourseMetadataImporter:
         Args:
             courserun_locators (list): list of courserun locator objects
         """
-        logger.info(f'[COURSE_METADATA_IMPORTER] Course metadata import started for courses. {courserun_locators}')
-
+        logger.info(f'[{cls.LOG_PREFIX}] Course metadata import started for courses. {courserun_locators}')
         cls.import_courses_metadata(courserun_locators)
-
-        logger.info(f'[COURSE_METADATA_IMPORTER] Course metadata import completed for courses. {courserun_locators}')
+        logger.info(f'[{cls.LOG_PREFIX}] Course metadata import completed for courses. {courserun_locators}')
 
     @classmethod
     def import_courses_metadata(cls, courserun_locators):
@@ -82,14 +79,14 @@ class CourseMetadataImporter:
         Args:
             courserun_locators (list): list of courserun locator objects
         """
-        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import started.')
+        logger.info(f'[{cls.LOG_PREFIX}] Course metadata import started.')
 
         for courserun_locators_chunk in cls.chunks(courserun_locators):
 
             # convert course locator objects to courserun keys
             courserun_keys = list(map(str, courserun_locators_chunk))
 
-            logger.info(f'[COURSE_METADATA_IMPORTER] Importing metadata. Courses: {courserun_keys}')
+            logger.info(f'[{cls.LOG_PREFIX}] Importing metadata. Courses: {courserun_keys}')
 
             course_details, courserun_with_course_uuids = cls.fetch_courses_details(
                 courserun_locators_chunk,
@@ -98,9 +95,7 @@ class CourseMetadataImporter:
             processed_courses_details = cls.process_courses_details(course_details, courserun_with_course_uuids)
             cls.store_courses_details(processed_courses_details)
 
-            logger.info(f'[COURSE_METADATA_IMPORTER] Import completed. Courses: {courserun_keys}')
-
-        logger.info('[COURSE_METADATA_IMPORTER] Course metadata import completed for all courses.')
+            logger.info(f'[{cls.LOG_PREFIX}] Import completed. Courses: {courserun_keys}')
 
     @classmethod
     def courserun_locators_to_import(cls):
@@ -118,7 +113,7 @@ class CourseMetadataImporter:
         course_uuids = courserun_with_course_uuids.values()
         course_uuids_str = ','.join(course_uuids)
 
-        logger.info(f'[COURSE_METADATA_IMPORTER] Fetching details from discovery. Course UUIDs {course_uuids}.')
+        logger.info(f'[{cls.LOG_PREFIX}] Fetching details from discovery. Course UUIDs {course_uuids}.')
         api_url = urljoin(
             f"{api_base_url}/", f"courses/?limit=50&include_hidden_course_runs=1&uuids={course_uuids_str}"
         )
@@ -136,7 +131,7 @@ class CourseMetadataImporter:
         courserun_keys = list(map(str, courserun_locators))
         encoded_courserun_keys = ','.join(map(quote_plus, courserun_keys))
 
-        logger.info(f'[COURSE_METADATA_IMPORTER] Fetching uuids for Courseruns {encoded_courserun_keys}')
+        logger.info(f'[{cls.LOG_PREFIX}] Fetching uuids for Courseruns {encoded_courserun_keys}')
         api_url = urljoin(
             f"{api_base_url}/", f"course_runs/?limit=50&include_hidden_course_runs=1&keys={encoded_courserun_keys}"
         )
@@ -168,7 +163,7 @@ class CourseMetadataImporter:
         params = urlencode(query_params)
         api_url = urljoin(f"{api_base_url}/", f"courses/?{params}")
         results, next_url, total = cls.get_api_reponse(api_url)
-        logger.info(f'[COURSE_METADATA_IMPORTER] Total Records are {total}')
+        logger.info(f'[{cls.LOG_PREFIX}] Total Records are {total}')
         yield results
 
         while next_url:
@@ -194,7 +189,7 @@ class CourseMetadataImporter:
         """
         Call api endpoint and return response.
         """
-        logger.info(f'[COURSE_METADATA_IMPORTER] API Call: URL: [{api_url}]')
+        logger.info(f'[{cls.LOG_PREFIX}] API Call: URL: [{api_url}]')
         client = cls.get_api_client()
         response = client.get(api_url)
         response.raise_for_status()
@@ -205,47 +200,53 @@ class CourseMetadataImporter:
         """
         Parse and extract the minimal data that we need.
         """
-        log_prefix = 'COURSE_METADATA_IMPORTER'
-
         courses = {}
         for courserun_key, course_uuid in courserun_with_course_uuids.items():
-            logger.info(f'[{log_prefix}] Process. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}')
+            logger.info(f'[{cls.LOG_PREFIX}] Process. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}')
             course_metadata = cls.find_attr(courses_details, 'uuid', course_uuid)
             if not course_metadata:
-                logger.info(f'[COURSE_METADATA_IMPORTER] Metadata not found. CourseUUID: {course_uuid}')
+                logger.info(f'[{cls.LOG_PREFIX}] Metadata not found. CourseUUID: {course_uuid}')
                 continue
 
+            course_run = cls.find_attr(course_metadata.get('course_runs'), 'key', courserun_key)
+            if not course_run:
+                logger.info(
+                    f'[{cls.LOG_PREFIX}] Courserun not found. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}'
+                )
+                continue
+
+            enroll_by = start_date = end_date = None
+
+            # Determine start & end dates for course run
+            start_date = course_run.get('start')
+            end_date = course_run.get('end')
+
+            # Determine enroll by date for course run.
+            enrollment_end = course_run.get('enrollment_end')
+            seat = cls.find_best_mode_seat(course_run.get('seats'))
+            upgrade_deadline_for_seat = (
+                seat.get('upgrade_deadline_override') or seat.get('upgrade_deadline')
+                if seat else None
+            )
+            if upgrade_deadline_for_seat:
+                # If upgrade deadline is present, use it as enroll by date.
+                enroll_by = upgrade_deadline_for_seat
+            elif enrollment_end:
+                # If no upgrade deadline, use enrollment end date as enroll by date.
+                enroll_by = enrollment_end
+            else:
+                # If no enroll by date found, log it and continue.
+                logger.info(
+                    f"[{cls.LOG_PREFIX}] No enroll by date found for course run {courserun_key}"
+                )
+
+            # Deduce the course type and product source from course metadata.
             course_type = course_metadata.get('course_type') or ''
             product_source = course_metadata.get('product_source') or ''
             if product_source:
                 product_source = product_source.get('slug')
 
-            enroll_by = start_date = end_date = None
-
-            if course_type in (EXEC_ED_COURSE_TYPE, BOOTCAMP_2U):
-                additional_metadata = course_metadata.get('additional_metadata')
-                if additional_metadata:
-                    enroll_by = additional_metadata.get('registration_deadline')
-                    start_date = additional_metadata.get('start_date')
-                    end_date = additional_metadata.get('end_date')
-            else:
-                course_run = cls.find_attr(course_metadata.get('course_runs'), 'key', courserun_key)
-                if course_run:
-                    seat = cls.find_best_mode_seat(course_run.get('seats'))
-                    if seat:
-                        enroll_by = seat.get('upgrade_deadline')
-                    else:
-                        logger.info(
-                            f"[{log_prefix}] No Seat Found. Seats: {course_run.get('seats')}"
-                        )
-                    start_date = course_run.get('start')
-                    end_date = course_run.get('end')
-                else:
-                    logger.info(
-                        f'[{log_prefix}] Courserun not found. CourserunKey: {courserun_key}, CourseUUID: {course_uuid}'
-                    )
-                    continue
-
+            # Co-locate courserun metadata into a dict and store it within `courses`.
             course_data = {
                 'course_type': course_type,
                 'product_source': product_source,
@@ -284,10 +285,9 @@ class CourseMetadataImporter:
                 return 0
 
         sorted_seats = sorted(seats, key=sort_key, reverse=True)
-        if sorted_seats:
-            return sorted_seats[0]
-
-        return None
+        if not sorted_seats:
+            return None
+        return sorted_seats[0]
 
     @classmethod
     def chunks(cls, keys, chunk_size=50):
