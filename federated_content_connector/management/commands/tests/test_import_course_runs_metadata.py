@@ -30,7 +30,7 @@ class TestImportCourserunsMetadataCommand(TestCase):
         Return list of course locators.
         """
         return [
-            CourseKey.from_string("course-v1:edX+DemoX+Demo_Course"),
+            CourseKey.from_string("course-v1:edX+DemoX+Demo_Course2024a"),
             CourseKey.from_string("course-v1:edX+E2E-101+course"),
         ]
 
@@ -54,9 +54,9 @@ class TestImportCourserunsMetadataCommand(TestCase):
         course_details = CourseDetails.objects.get(id=self.courserun_locators()[0])
         assert course_details.course_type == 'executive-education-2u'
         assert course_details.product_source == '2u'
-        assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2023, 6, 19, 0, 0, 0)
-        assert course_details.end_date.replace(tzinfo=None) == datetime.datetime(2023, 8, 11, 23, 59, 59)
-        assert course_details.enroll_by.replace(tzinfo=None) == datetime.datetime(2023, 6, 13, 23, 59, 59)
+        assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2024, 3, 14, 0, 0, 0)
+        assert course_details.end_date.replace(tzinfo=None) == datetime.datetime(2024, 5, 27, 23, 59, 59)
+        assert course_details.enroll_by.replace(tzinfo=None) == datetime.datetime(2024, 3, 31, 0, 0, 0)
 
         course_details = CourseDetails.objects.get(id=self.courserun_locators()[1])
         assert course_details.course_type == 'verified-audit'
