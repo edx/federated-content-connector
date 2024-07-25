@@ -20,6 +20,12 @@ class CourseDetails(TimeStampedModel):
         help_text='Courserun key'
     )
 
+    course_key = models.CharField(
+        max_length=255,
+        help_text="The top-level course key associated with the course run key",
+        blank=True,
+        default=""
+    )
     course_type = models.CharField(
         max_length=255,
         help_text='Type of course. For example Masters, Verified, Audit, executive-education-2u,  etc'

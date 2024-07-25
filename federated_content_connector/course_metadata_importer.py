@@ -241,6 +241,7 @@ class CourseMetadataImporter:
                 )
 
             # Deduce the course type and product source from course metadata.
+            course_key = course_metadata.get('key') or ''
             course_type = course_metadata.get('course_type') or ''
             product_source = course_metadata.get('product_source') or ''
             if product_source:
@@ -248,6 +249,7 @@ class CourseMetadataImporter:
 
             # Co-locate courserun metadata into a dict and store it within `courses`.
             course_data = {
+                'course_key': course_key,
                 'course_type': course_type,
                 'product_source': product_source,
                 'enroll_by': enroll_by,

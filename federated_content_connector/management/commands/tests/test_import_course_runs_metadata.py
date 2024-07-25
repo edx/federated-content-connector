@@ -52,6 +52,7 @@ class TestImportCourserunsMetadataCommand(TestCase):
         assert CourseDetails.objects.count() == 2
 
         course_details = CourseDetails.objects.get(id=self.courserun_locators()[0])
+        assert course_details.course_key == 'edX+DemoX'
         assert course_details.course_type == 'executive-education-2u'
         assert course_details.product_source == '2u'
         assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2024, 3, 14, 0, 0, 0)
@@ -59,6 +60,7 @@ class TestImportCourserunsMetadataCommand(TestCase):
         assert course_details.enroll_by.replace(tzinfo=None) == datetime.datetime(2024, 3, 31, 0, 0, 0)
 
         course_details = CourseDetails.objects.get(id=self.courserun_locators()[1])
+        assert course_details.course_key == 'edX+E2E-101'
         assert course_details.course_type == 'verified-audit'
         assert course_details.product_source == 'edx'
         assert course_details.start_date.replace(tzinfo=None) == datetime.datetime(2022, 9, 11, 12, 1, 8)
