@@ -14,7 +14,11 @@ Change Log
 Unreleased
 ----------
 
-1.4.5 – 2024-07-25
+1.5.1 – 2024-07-25
+------------------
+* Update release notes
+
+1.5.0 – 2024-07-25
 ------------------
 * Adds a `course_key` field to the `CourseDetails` model with a default value of an empty string
 
