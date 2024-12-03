@@ -33,16 +33,38 @@ class CreateCustomUrlForCourseStep(PipelineStep):
         """
         Pipeline step that modifies the course home url for externally hosted courses
         """
+        filtered_course_home_url = course_home_url
+
+        course_details = CourseDetails.objects.filter(id=course_key).first()
+        if course_details:
+            course_type = course_details.course_type
+            product_source = course_details.product_source
+        else:
+            course_type, product_source = self._fetch_course_type_and_product_source(course_key)
+
+        if course_type == EXEC_ED_COURSE_TYPE and product_source == PRODUCT_SOURCE_2U:
+            filtered_course_home_url = getattr(settings, 'EXEC_ED_LANDING_PAGE', EXEC_ED_LANDING_PAGE)
+
+        return {'course_key': course_key, 'course_home_url': filtered_course_home_url}
+
+    def _fetch_course_type_and_product_source(self, course_key):
+        """
+        Helper to determine the course_type and product_source
+        from the course-discovery service.
+        """
         course_key_str = '{}+{}'.format(course_key.org, course_key.course)
         course_data = get_course_data(course_key_str, ['course_type', 'product_source'])
-        if course_data:
-            course_type = course_data.get('course_type')
-            product_source = course_data.get('product_source')
-            product_source_slug = product_source['slug'] if isinstance(product_source, dict) else product_source
-            if course_type == EXEC_ED_COURSE_TYPE and product_source_slug == PRODUCT_SOURCE_2U:
-                course_home_url = getattr(settings, 'EXEC_ED_LANDING_PAGE', EXEC_ED_LANDING_PAGE)
 
-        return {'course_key': course_key, 'course_home_url': course_home_url}
+        if not course_data:
+            return (None, None)
+
+        course_type = course_data.get('course_type')
+        product_source_value = course_data.get('product_source')
+        product_source = product_source_value
+        if isinstance(product_source_value, dict):
+            product_source = product_source_value['slug']
+
+        return course_type, product_source
 
 
 class CreateApiRenderEnrollmentStep(PipelineStep):
