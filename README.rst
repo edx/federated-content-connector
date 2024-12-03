@@ -14,68 +14,37 @@ federated-content-connector
 Purpose
 -------
 
-One-line description for README and other doc files.
-
-TODO: The ``README.rst`` file should start with a brief description of the repository and its purpose.
-It should be described in the context of other repositories under the ``openedx``
-organization. It should make clear where this fits in to the overall Open edX
-codebase and should be oriented towards people who are new to the Open edX
-project.
+edx-platform plugin to run extra, business-specific, processing steps on course metadata.
 
 Getting Started
 ---------------
 
 Developing
 ~~~~~~~~~~
-
-One Time Setup
---------------
 .. code-block::
 
-  # Clone the repository
+  # Clone the repository into your $DEVSTACK_WORKSPACE/src
+  # so that your local code is mounted into your LMS docker container
   git clone git@github.com:openedx/federated-content-connector.git
-  cd federated-content-connector
 
-  # Set up a virtualenv with the same name as the repo and activate it
-  # Here's how you might do that if you have virtualenvwrapper setup.
-  mkvirtualenv -p python3.8 federated-content-connector
+  # get into your running LMS container shell (from your devstack directory)
+  make lms-shell
 
+  # install your local changes in editable mode
+  pip install -e /edx/src/federated-content-connector
 
-Every time you develop something in this repo
----------------------------------------------
-.. code-block::
+  # outside of your LMS shell, you may need to restart
+  # your LMS devserver to get local changes loading
+  make lms-restart-devserver
 
-  # Activate the virtualenv
-  # Here's how you might do that if you're using virtualenvwrapper.
-  workon federated-content-connector
+  # To run unit tests for this repo,
+  # set up a virtualenv with the same name as the repo and activate it
+  cd /edx/src/federated-content-connector
+  virtaulenv venv/fcc
+  source venv/fcc/bin/activate
 
-  # Grab the latest code
-  git checkout main
-  git pull
-
-  # Install/update the dev requirements
-  make requirements
-
-  # Run the tests and quality checks (to verify the status before you make any changes)
-  make validate
-
-  # Make a new branch for your changes
-  git checkout -b <your_github_username>/<short_description>
-
-  # Using your favorite editor, edit the code to make your change.
-  vim ...
-
-  # Run your new tests
-  pytest ./path/to/new/tests
-
-  # Run all the tests and quality checks
-  make validate
-
-  # Commit all your changes
-  git commit ...
-  git push
-
-  # Open a PR and ask for review.
+  # run tests, quality, etc.
+  make test
 
 Deploying
 =========

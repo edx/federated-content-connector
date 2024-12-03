@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ----------
 
+1.5.2
+------------------
+* fix: gets custom course URL from DB if possible
+
 1.5.1 – 2024-07-25
 ------------------
 * Update release notes
