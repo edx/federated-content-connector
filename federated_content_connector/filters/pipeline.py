@@ -1,4 +1,5 @@
 """Open edx Filters Pipeline for the federated content connector."""
+from collections import namedtuple
 from datetime import datetime
 
 from django.conf import settings
@@ -9,6 +10,48 @@ from pytz import utc
 
 from federated_content_connector.constants import EXEC_ED_COURSE_TYPE, EXEC_ED_LANDING_PAGE, PRODUCT_SOURCE_2U
 from federated_content_connector.models import CourseDetails
+
+
+COURSE_DETAILS_FIELDS = [
+    'id',
+    'course_key',
+    'course_type',
+    'product_source',
+    'start_date',
+    'end_date',
+    'enroll_by',
+]
+
+CourseDetailsData = namedtuple(
+    'CourseDetailsData',
+    COURSE_DETAILS_FIELDS,
+)
+
+
+def generate_course_details_data(course_key):
+    """
+    Given a course_key, generates an instance of ``CourseDetailsData``,
+    populated with data read from either a ``CourseDetails`` model instance,
+    or a dictionary of data returned by ``get_course_data()``, which is implemented
+    as an HTTP call to the course-discovery service.
+    """
+    model_instance = CourseDetails.objects.filter(id=course_key).first()
+    if model_instance:
+        return CourseDetailsData(**{
+            field_name: getattr(model_instance, field_name, None)
+            for field_name in COURSE_DETAILS_FIELDS
+        })
+
+    course_key_str = '{}+{}'.format(course_key.org, course_key.course)
+    course_data_dict = get_course_data(course_key_str, ['course_type', 'product_source'])
+    fields_and_values = {
+        field_name: course_data_dict.get(field_name)
+        for field_name in COURSE_DETAILS_FIELDS
+    }
+    product_source_value = fields_and_values.get('product_source')
+    if isinstance(product_source_value, dict):
+        fields_and_values['product_source'] = product_source_value.get('slug')
+    return CourseDetailsData(**fields_and_values)
 
 
 class CreateCustomUrlForCourseStep(PipelineStep):
@@ -35,36 +78,20 @@ class CreateCustomUrlForCourseStep(PipelineStep):
         """
         filtered_course_home_url = course_home_url
 
-        course_details = CourseDetails.objects.filter(id=course_key).first()
-        if course_details:
-            course_type = course_details.course_type
-            product_source = course_details.product_source
-        else:
-            course_type, product_source = self._fetch_course_type_and_product_source(course_key)
-
-        if course_type == EXEC_ED_COURSE_TYPE and product_source == PRODUCT_SOURCE_2U:
-            filtered_course_home_url = getattr(settings, 'EXEC_ED_LANDING_PAGE', EXEC_ED_LANDING_PAGE)
+        course_details = generate_course_details_data(course_key)
+        if is_exec_ed_2u_course(course_details):
+            filtered_course_home_url = getattr(
+                settings, 'EXEC_ED_LANDING_PAGE', EXEC_ED_LANDING_PAGE,
+            )
 
         return {'course_key': course_key, 'course_home_url': filtered_course_home_url}
 
-    def _fetch_course_type_and_product_source(self, course_key):
-        """
-        Helper to determine the course_type and product_source
-        from the course-discovery service.
-        """
-        course_key_str = '{}+{}'.format(course_key.org, course_key.course)
-        course_data = get_course_data(course_key_str, ['course_type', 'product_source'])
 
-        if not course_data:
-            return (None, None)
-
-        course_type = course_data.get('course_type')
-        product_source_value = course_data.get('product_source')
-        product_source = product_source_value
-        if isinstance(product_source_value, dict):
-            product_source = product_source_value['slug']
-
-        return course_type, product_source
+def is_exec_ed_2u_course(course_details_data):
+    return (
+        course_details_data.product_source == PRODUCT_SOURCE_2U and
+        course_details_data.course_type == EXEC_ED_COURSE_TYPE
+    )
 
 
 class CreateApiRenderEnrollmentStep(PipelineStep):
@@ -89,16 +116,11 @@ class CreateApiRenderEnrollmentStep(PipelineStep):
         """
         Pipeline step that modifies the enrollment data for the course.
         """
-        try:
-            course_details = CourseDetails.objects.get(id=course_key)
-            course_type = course_details.course_type
-            product_source = course_details.product_source
-            start_date = course_details.start_date
-            if product_source == PRODUCT_SOURCE_2U and course_type == EXEC_ED_COURSE_TYPE:
-                if start_date and start_date <= timezone.now():
-                    serialized_enrollment['hasStarted'] = True
-        except CourseDetails.DoesNotExist:
-            pass
+        course_details = generate_course_details_data(course_key)
+        start_date = course_details.start_date
+        if is_exec_ed_2u_course(course_details):
+            if start_date and start_date <= timezone.now():
+                serialized_enrollment['hasStarted'] = True
 
         return {'course_key': course_key, 'serialized_enrollment': serialized_enrollment}
 
@@ -125,24 +147,18 @@ class CreateApiRenderCourseRunStep(PipelineStep):
         """
         Pipeline step that modifies the courserun data for the course.
         """
-        try:
-            course_details = CourseDetails.objects.get(id=serialized_courserun.get('courseId'))
-            course_type = course_details.course_type
-            product_source = course_details.product_source
-            homeUrl = serialized_courserun.get('homeUrl')
-            start_date, end_date = course_details.start_date, course_details.end_date
+        course_details = generate_course_details_data(serialized_courserun.get('courseId'))
+        homeUrl = serialized_courserun.get('homeUrl')
+        start_date, end_date = course_details.start_date, course_details.end_date
 
-            if product_source == PRODUCT_SOURCE_2U and course_type == EXEC_ED_COURSE_TYPE:
-                now_utc = datetime.now(utc)
-                serialized_courserun.update({
-                    'startDate': start_date,
-                    'endDate': end_date,
-                    'isStarted': now_utc > start_date if start_date is not None else True,
-                    'isArchived': now_utc > end_date if end_date is not None else False,
-                    'resumeUrl': homeUrl
-                })
-
-        except CourseDetails.DoesNotExist:
-            pass
+        if is_exec_ed_2u_course(course_details):
+            now_utc = datetime.now(utc)
+            serialized_courserun.update({
+                'startDate': start_date,
+                'endDate': end_date,
+                'isStarted': now_utc > start_date if start_date is not None else True,
+                'isArchived': now_utc > end_date if end_date is not None else False,
+                'resumeUrl': homeUrl
+            })
 
         return {'serialized_courserun': serialized_courserun}
