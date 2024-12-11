@@ -13,9 +13,14 @@ Change Log
 
 Unreleased
 ----------
+* Nothing unreleased
+
+1.6.0
+-----
+* feat: request restricted runs when importing course run data
 
 1.5.2
-------------------
+-----
 * fix: gets custom course URL from DB if possible
 
 1.5.1 – 2024-07-25

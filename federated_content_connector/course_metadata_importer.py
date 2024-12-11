@@ -113,10 +113,15 @@ class CourseMetadataImporter:
         course_uuids = courserun_with_course_uuids.values()
         course_uuids_str = ','.join(course_uuids)
 
+        query_params = {
+            'limit': 50,
+            'include_hidden_course_runs': 1,
+            'uuids': course_uuids_str,
+            'include_restricted': 'custom-b2b-enterprise',
+        }
+        url_params = urlencode(query_params)
+        api_url = urljoin(f"{api_base_url}/", f"courses/?{url_params}")
         logger.info(f'[{cls.LOG_PREFIX}] Fetching details from discovery. Course UUIDs {course_uuids}.')
-        api_url = urljoin(
-            f"{api_base_url}/", f"courses/?limit=50&include_hidden_course_runs=1&uuids={course_uuids_str}"
-        )
         response = cls.get_response_from_api(api_url)
         courses_details = response.json()
         results = courses_details.get('results', [])
@@ -131,10 +136,18 @@ class CourseMetadataImporter:
         courserun_keys = list(map(str, courserun_locators))
         encoded_courserun_keys = ','.join(map(quote_plus, courserun_keys))
 
-        logger.info(f'[{cls.LOG_PREFIX}] Fetching uuids for Courseruns {encoded_courserun_keys}')
-        api_url = urljoin(
-            f"{api_base_url}/", f"course_runs/?limit=50&include_hidden_course_runs=1&keys={encoded_courserun_keys}"
+        query_param_str = (
+            '?limit=50&'
+            'include_hidden_course_runs=1&'
+            'include_restricted=custom-b2b-enterprise&'
+            f'keys={encoded_courserun_keys}'
         )
+        api_url = urljoin(
+            f"{api_base_url}/",
+            f"course_runs/{query_param_str}"
+        )
+
+        logger.info(f'[{cls.LOG_PREFIX}] Fetching uuids for Courseruns {courserun_keys}')
         response = cls.get_response_from_api(api_url)
         courses_details = response.json()
         results = courses_details.get('results', [])
@@ -157,6 +170,7 @@ class CourseMetadataImporter:
             'timestamp': timestamp,
             'limit': 50,
             'include_hidden_course_runs': 1,
+            'include_restricted': 'custom-b2b-enterprise',
         }
 
         api_base_url = get_catalog_api_base_url()
