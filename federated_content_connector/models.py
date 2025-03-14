@@ -26,6 +26,12 @@ class CourseDetails(TimeStampedModel):
         blank=True,
         default=""
     )
+    external_identifier = models.CharField(
+        max_length=255,
+        help_text="The identifier of the course in the external system",
+        blank=True,
+        default=""
+    )
     course_type = models.CharField(
         max_length=255,
         help_text='Type of course. For example Masters, Verified, Audit, executive-education-2u,  etc'
