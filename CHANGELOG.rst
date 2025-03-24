@@ -15,6 +15,10 @@ Unreleased
 ----------
 * Nothing unreleased
 
+1.7.0
+-----
+* Adds a `external_identifier` field to the `CourseDetails` model with a default value of an empty string
+
 1.6.0
 -----
 * feat: request restricted runs when importing course run data
