@@ -13,7 +13,10 @@ Change Log
 
 Unreleased
 ----------
-* Nothing unreleased
+
+1.7.1
+------------------
+* Added Django 4.2 and 5.2 tox and CI support on Python 3.11.
 
 1.7.0
 -----
