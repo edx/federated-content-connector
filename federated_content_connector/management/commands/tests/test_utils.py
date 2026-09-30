@@ -1178,5 +1178,7 @@ def side_effect_func(url):
         response_type = RESPONSE_TYPE_COURSES
     elif url.startswith(COURSE_RUNS_URL):
         response_type = RESPONSE_TYPE_COURSERUNS
+    else:
+        raise ValueError(f'Unexpected URL in mock side_effect_func: {url}')
 
     return MockResponse(response_type=response_type)

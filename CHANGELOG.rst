@@ -14,6 +14,31 @@ Change Log
 Unreleased
 ----------
 
+1.8.0 - 2026-09-29
+------------------
+* Added Python 3.12 support (libraries keep both 3.11 and 3.12): tox/CI now run the full
+  ``py{311,312}-django{42,52}`` matrix, the weekly requirements-upgrade workflow now
+  compiles with Python 3.12, ``pypi-publish.yml`` now builds/releases on 3.12 (previously
+  3.8, no longer installable under the new ``python_requires``), and ``setup.py`` declares
+  ``python_requires = >=3.11`` with 3.11/3.12 classifiers.
+* Regenerated ``requirements/*.txt`` from scratch with Python 3.12 (``make upgrade``).
+  ``code-annotations<3.0.0`` held back in ``requirements/constraints.txt`` (3.0.0 requires
+  Python >=3.12, which would break the 3.11 leg of the matrix).
+* Declared ``pytz`` as an explicit dependency in ``requirements/base.in``. It was only ever
+  an undeclared transitive dependency (via old Django/celery pins) despite
+  ``filters/pipeline.py`` importing it directly; the regenerated pins no longer pull it in
+  transitively, which would otherwise have broken that module at import time.
+* Regenerated ``pylintrc``/``.editorconfig`` via ``edx_lint update`` (5.3.4 -> 6.2.0). This
+  was required, not just a refresh: pylint was crashing on ``models.py`` because edx-lint
+  6.2.0 added a new PII-annotation checker (flags ``.. no_pii:``-annotated models that still
+  contain PII-looking fields) that requires a ``pii-terms`` pylintrc setting with no
+  default; this repo's two ``.. no_pii:`` models were tripping over the missing config.
+* Fixed a real bug in a test mock (``management/commands/tests/test_utils.py``): a new
+  pylint 4.0 check (``possibly-used-before-assignment``) caught ``side_effect_func``
+  referencing ``response_type`` when neither of its ``if``/``elif`` branches matched;
+  added an explicit ``else: raise ValueError(...)``.
+* ``docs/conf.py``: Python intersphinx mapping -> 3.12.
+
 1.7.1
 ------------------
 * Added Django 4.2 and 5.2 tox and CI support on Python 3.11.

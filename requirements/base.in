@@ -8,3 +8,4 @@ edx-opaque-keys
 django-extensions
 celery
 backoff
+pytz               # Used directly by filters/pipeline.py for UTC handling

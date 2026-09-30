@@ -10,3 +10,7 @@
 
 # Common constraints for edx repos
 -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
+
+# code-annotations 3.0.0 requires Python >=3.12, but this repo's tox matrix still tests
+# Python 3.11. Held back to the last release that supports 3.11 (2026-09-29).
+code-annotations<3.0.0
