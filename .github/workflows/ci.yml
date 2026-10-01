@@ -15,13 +15,24 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.11']
-        toxenv: [quality, pii_check, django42, django52]
+        include:
+          - python-version: '3.11'
+            toxenv: django42
+          - python-version: '3.11'
+            toxenv: django52
+          - python-version: '3.12'
+            toxenv: django42
+          - python-version: '3.12'
+            toxenv: django52
+          - python-version: '3.12'
+            toxenv: quality
+          - python-version: '3.12'
+            toxenv: pii_check
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: setup python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
